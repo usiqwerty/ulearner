@@ -1,5 +1,5 @@
 import cached_requests
-
+import re
 
 from ulearn.config import UlearnConfig
 from ulearn.pages.exercise import parse_exercise
@@ -31,3 +31,9 @@ def parse_page(page_id: str, config: UlearnConfig) -> UlearnPage:
             return parse_homework(blocks)
         else:
             raise Exception("Не удалось определить тип страницы")
+
+
+def parse_link(url: str):
+    """Извлечь ID курса и ID страницы из ссылки на эту страницу"""
+    r = re.search(r"https://ulearn.me/course/([\w\d]+)/[\w_]+_([\d\w\-]+)", url)
+    return r.groups()
