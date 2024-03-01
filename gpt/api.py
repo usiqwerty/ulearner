@@ -32,11 +32,12 @@ def request(query: str):
         chat_completion = client.chat.completions.create(messages=msgs, model="gpt-3.5-turbo", temperature=0.2)
         return chat_completion.choices[0].message.content
     except (APIConnectionError, PermissionDeniedError) as e:
-        proxies.remove(proxy_ip)
-        with open(proxies_fn, 'w') as f:
-            json.dump(proxies, f)
+        if not VPN_MODE:
+            proxies.remove(proxy_ip)
+            with open(proxies_fn, 'w') as f:
+                json.dump(proxies, f)
+            print('Proxy removed from list')
         print(e)
-        print('Proxy removed from list')
 
 
 def stream_request(query: str):
