@@ -17,7 +17,7 @@ class Comment:
     replies: list
 
     def __str__(self):
-        return f"{' * ' * self.fold_level}[{self.author} {self.publish_time.date()}, {self.likes} лайков] {self.text}"
+        return f"{' * ' * self.fold_level}[{self.author} - {self.likes} лайков] {self.text}"
 
 
 @dataclass
