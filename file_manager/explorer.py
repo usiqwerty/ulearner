@@ -1,7 +1,7 @@
 import os.path
 import re
 
-project_root = "C:\\Users\\Марсианин\\Desktop\\test"
+project_root = "C:\\Users\\Марсианин\\Desktop\\vmtranslator"
 
 
 def get_requested_file_name(fixme_string: str):

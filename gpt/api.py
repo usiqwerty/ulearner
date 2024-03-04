@@ -8,7 +8,7 @@ from openai import OpenAI, APIConnectionError, PermissionDeniedError
 from appconfig import openai_api_key
 
 proxies_fn = os.path.join("userdata", "proxies.json")
-VPN_MODE = True
+VPN_MODE = False
 http_proxy_client = None
 
 if not VPN_MODE:

@@ -24,7 +24,8 @@ def fetch_course_full(course_id: str) -> UlearnCourse:
             the_slide = Slide(slide_id=slide['id'], slug=slide['slug'], slide_type=sl_type, title=slide['title'])
             the_unit.slides.append(the_slide)
         course_units.append(the_unit)
-    course = UlearnCourse(name=course_name, code=course_id, lecture_prompt='', units=course_units)
+    lp = input("lecture_prompt: ")
+    course = UlearnCourse(name=course_name, code=course_id, lecture_prompt=lp, units=course_units)
 
     courses[course_id] = course #.json()  # asdict(course)
     save_courses(courses)
@@ -35,7 +36,7 @@ print('units done')
 
 
 def get_course(course_id: str) -> UlearnCourse:
-    if not courses:
+    if course_id not in courses:
         fetch_course_full(course_id)
     return courses[course_id]
 

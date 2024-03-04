@@ -1,6 +1,8 @@
 import json
 import os.path
 
+import pydantic
+
 from ulearn.courses.course import SlideProgress, UlearnCourse
 
 filename = os.path.join("userdata", "courses.json")
@@ -17,9 +19,11 @@ def load_courses() -> dict[str, UlearnCourse]:
     return courses
 
 
-def save_courses(data):
+def save_courses(data:dict[str, UlearnCourse]):
+
     with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(data, f)
+        the_json_dict={k: v.json() for k,v in data.items()}
+        json.dump(the_json_dict, f)
         print(f"Written {filename}")
 
 

@@ -7,13 +7,13 @@ from ulearn.parser import parse_page, parse_link
 from gpt.api import request
 # TODO: здесь же устанавливать рабочий каталог для homework
 # и прокинуть туда config
-course_id, pid = parse_link('https://ulearn.me/course/basicprogramming2/Steki_i_ocheredi_0b1faf5b-7082-4a99-8556-f5b4c00bd912')
+course_id, pid = parse_link('https://ulearn.me/course/nand2tetris/Zadacha_Parser_e616a714-9ecc-4b46-a04c-85a6ce3b9d55')
 
 print("Project root:", file_manager.explorer.project_root)
 
 course = get_course(course_id)
 config = UlearnConfig(course, user_id)
-r = parse_page(pid, config)
+r = parse_page(pid, config, force_page_type="homework")
 print(r)
 resp = request(r.generate_prompt())
 

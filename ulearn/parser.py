@@ -1,6 +1,6 @@
-import cached_requests
 import re
 
+import cached_requests
 from ulearn.config import UlearnConfig
 from ulearn.pages.exercise import parse_exercise
 from ulearn.pages.homework import parse_homework
@@ -10,8 +10,8 @@ from ulearn.pages.theory_task import parse_theory_task_html
 from ulearn.utils import extract_blocks
 
 
-def parse_page(page_id: str, config: UlearnConfig) -> UlearnPage:
-    page_type = config.course.get_page_type(page_id)
+def parse_page(page_id: str, config: UlearnConfig, force_page_type: str | None = None) -> UlearnPage:
+    page_type = force_page_type or config.course.get_page_type(page_id)
     if page_type == 'quiz':
         slug = config.course.get_slug_by_id(page_id)
         url = f"https://ulearn.me/course/{config.course.code}/{slug}"
