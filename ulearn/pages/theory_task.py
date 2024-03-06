@@ -16,7 +16,7 @@ class TheoryTaskPage(UlearnPage):
 	def generate_prompt(self) -> str:
 		# "Напиши ответы к заданиям: \n" +
 		# "Ты профессиональный программист на C#. Выполни указанные задания\n" +
-		return self.content
+		return "Выполни задания и напиши правильные ответы:\n"+self.content
 
 
 def parse_theory_task_html(page_html: str):
