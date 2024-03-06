@@ -12,7 +12,7 @@ progress_fn = os.path.join("userdata", 'progress.json')
 def load_courses() -> dict[str, UlearnCourse]:
     try:
         with open(filename, encoding='utf-8') as fp:
-            courses = {k: UlearnCourse(**v) for k, v in json.load(fp).items()}
+            courses = {k: UlearnCourse(**json.loads(v)) for k, v in json.load(fp).items()}
     except FileNotFoundError:
         print('No courses saved')
         courses = {}
