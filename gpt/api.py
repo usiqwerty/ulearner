@@ -23,9 +23,10 @@ if not VPN_MODE:
 client = OpenAI(api_key=openai_api_key, http_client=http_proxy_client)
 
 
-def request(query: str):
+def request(query: str, system_message: str = None):
     """Ответ от ChatGPT"""
-    msgs = [
+    msgs = [{"role": "system", "content": system_message}] if system_message else []
+    msgs += [
         {"role": "user", "content": query}
     ]
     try:
