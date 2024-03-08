@@ -53,12 +53,11 @@ def video_summary(youtube_video_id: str):
         print(f"Waiting {interval}ms")
         sleep(interval / 1000)
 
-
     keypoints = gen_data['keypoints']
     for keypoint in keypoints:
         for thesis in keypoint['theses']:
             print(f"{keypoint['id']}.{thesis['id']}. {thesis['content']}")
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     video_summary("LXA_FovAS-A")

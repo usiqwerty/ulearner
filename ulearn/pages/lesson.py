@@ -24,16 +24,17 @@ class LecturePage(UlearnPage):
             comments_textual += str(comment) + "\n"
             for reply in comment.replies:
                 comments_textual += str(reply) + "\n"
-        return f"""Вот конспект видеолекции по {self.config.course.lecture_prompt} на тему {self.name}:
-{timecodes_textual}
-```
-{self.code_block or ""}
-```
+        return (f"Вот конспект видеолекции по {self.config.course.lecture_prompt} на тему {self.name}:\n" +
+                timecodes_textual + "\n" +
+                f"```\n{self.code_block or ""}\n```\n" +
+                "Можешь объяснить эту тему? "
+                "Развёрнуто объясни суть и проиллюстрируй примерами кода. "
+                "Наверняка приведённая информация устарела или неточна, если это так, можешь исправить эти неточности. "
+                "Возможно, комментарии пользователей помогут выявить важные моменты:\n" +
+                comments_textual)
 
-Можешь объяснить эту тему? Развёрнуто объясни суть и проиллюстрируй примерами кода. Наверняка приведённая информация устарела или неточна, если это так, можешь исправить эти неточности. Возможно, комментарии пользователей помогут выявить важные моменты:
-{comments_textual}
-"""
-#TODO: суть плохое слово здесь
+
+# TODO: суть плохое слово здесь
 def parse_lesson(blocks: dict[str, dict], page_id, title, config: UlearnConfig):
     video = blocks.get('video') or blocks.get('youtube')
     code_block = blocks.get('code')

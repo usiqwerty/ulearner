@@ -3,6 +3,7 @@ import requests
 from ulearn.courses.course import UlearnCourse, CourseUnit, Slide
 from ulearn.courses.storage import load_courses, save_courses
 
+
 def fetch_course_full(course_id: str) -> UlearnCourse:
     """Скачать, распарсить и сохранить информацию по курсу: юниты, слайды"""
     global courses
@@ -27,9 +28,10 @@ def fetch_course_full(course_id: str) -> UlearnCourse:
     lp = input("lecture_prompt: ")
     course = UlearnCourse(name=course_name, code=course_id, lecture_prompt=lp, units=course_units)
 
-    courses[course_id] = course #.json()  # asdict(course)
+    courses[course_id] = course  # .json()  # asdict(course)
     save_courses(courses)
     return course
+
 
 courses = load_courses()
 print('units done')

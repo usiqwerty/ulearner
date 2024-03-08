@@ -14,7 +14,7 @@ class Comment:
     replies: list
 
     def __str__(self):
-        self.text = self.text.replace('\n','')
+        self.text = self.text.replace('\n', '')
         if self.fold_level:
             return f"Ответ: [{self.author} - {self.likes} лайков]: {self.text}"
         else:
