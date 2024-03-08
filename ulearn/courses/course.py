@@ -32,6 +32,8 @@ class UlearnCourse(BaseModel):
         for unit in self.units:
             for slide in unit.slides:
                 if slide.slide_id == page_id:
+                    if slide.slide_type == "autocheck":
+                        return "homework"
                     return slide.slide_type
 
 
