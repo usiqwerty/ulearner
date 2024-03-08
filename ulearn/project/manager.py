@@ -11,7 +11,7 @@ def extract_project_name(url: str)-> str:
 def download_and_unzip(url: str, force_update = False):
     project_name = extract_project_name(url)
     files = os.listdir(ulearner_root)
-    target_fn= f"{project_name}.zip"
+    target_fn = f"{project_name}.zip"
 
     target_full_path = os.path.join(ulearner_root, target_fn)
     if target_fn not in files:

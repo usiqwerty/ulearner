@@ -8,9 +8,7 @@ from ulearn.project.manager import download_and_unzip
 
 # TODO: здесь же устанавливать рабочий каталог для homework
 # и прокинуть туда config
-url = "https://ulearn.me/course/basicprogramming2/Poisk_podstroki_v_stroke_2_d9c61ebc-527a-4311-b9b8-7b9e5b7f9100"
-
-
+url = "https://ulearn.me/course/nand2tetris/Zadacha_CodeWriter_6b7304b6-8de1-49a5-8506-d32b68a68b39"
 
 course_id, pid = parse_link(url)
 
@@ -19,11 +17,11 @@ course = get_course(course_id)
 config = UlearnConfig(course, user_id)
 r = parse_page(pid, config)
 
-print(r.system_message)
-print(r.generate_prompt())
+# print(r.system_message)
+# print(r.generate_prompt())
 
-#
-# resp = request(r.generate_prompt(), r.system_message)
-# print(resp)
+
+resp = request(r.generate_prompt(), r.system_message)
+print(resp)
 
 save_to_disk()
