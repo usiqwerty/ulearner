@@ -1,17 +1,16 @@
-import file_manager.explorer
 from appconfig import user_id
 from cached_requests import save_to_disk
 from ulearn.config import UlearnConfig
 from ulearn.courses.manager import get_course
 from ulearn.parser import parse_page, parse_link
 from gpt.api import request
-
+from ulearn.project.manager import download_and_unzip
 
 # TODO: здесь же устанавливать рабочий каталог для homework
 # и прокинуть туда config
 url = "https://ulearn.me/course/basicprogramming2/Poisk_podstroki_v_stroke_2_d9c61ebc-527a-4311-b9b8-7b9e5b7f9100"
 
-print("Project root:", file_manager.explorer.project_root)
+
 
 course_id, pid = parse_link(url)
 

@@ -11,8 +11,9 @@ try:
     ya300_apikey = config_data['ya300_apikey']
     yandex_session_cookie = config_data['yandex_session_cookie']
     ys_cookie = config_data['ys_cookie']
-    project_root = config_data['project_root']
+    ulearner_root = config_data['ulearner_root']
 except (KeyError, FileNotFoundError) as e:
     print(e)
-    print('{"ulearn_uid":ULEARN_UID, "openai_api_key":OPENAI_API_KEY}')
+    print('{"ulearner_root": "", "ulearn_uid": "", "openai_api_key": "", "ya300_apikey": "", "yandex_session_cookie": "", "ys_cookie": ""}')
     exit(1)
+

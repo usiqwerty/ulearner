@@ -1,6 +1,6 @@
 import os.path
 import re
-from appconfig import project_root
+from appconfig import ulearner_root
 
 
 def get_requested_file_name(fixme_string: str):
@@ -9,7 +9,12 @@ def get_requested_file_name(fixme_string: str):
 		return res.group(1)
 
 
-def get_code_file(filename: str):
-	full_path_fn = os.path.join(project_root, filename)
-	with open(full_path_fn) as f:
+def get_code_file(project_name: str, filename: str):
+	"""
+	:param project_name: Имя проекта
+	:param filename: Имя файла с кодом
+	:return: Содержимое файла с кодом
+	"""
+	full_path_fn = os.path.join(ulearner_root, project_name, filename)
+	with open(full_path_fn, encoding='utf-8') as f:
 		return f.read()
