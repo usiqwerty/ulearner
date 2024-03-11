@@ -5,6 +5,7 @@ from file_manager.explorer import get_code_file
 from file_manager.explorer import get_requested_file_name
 from ulearn.pages.page import UlearnPage
 from ulearn.project.manager import extract_project_name
+from ulearn.project.dependencies import resolve_all_dependencies
 
 code_quality_note = '\n'.join([
     "Не забывай о правилах написания чистого кода, а так же используй var при объявлении типов переменных.",
@@ -40,5 +41,9 @@ def parse_homework(blocks):
     #TODO: какие-то магические числа, почему именно len(x)>1 ???
     # вообще, надо как-то нормально преобразовывать в текст
     prelude = '\n'.join(x.replace('\n', ' ') for x in content.stripped_strings if len(x) > 1)
-    page = HomeworkPage(prelude=prelude, initial_code_file=get_code_file(project, code_file_name, project_link))
+    main_source = get_code_file(project, code_file_name, project_link)
+    #
+    deps = resolve_all_dependencies(main_source, project)
+
+    page = HomeworkPage(prelude=prelude, initial_code_file=main_source)
     return page
