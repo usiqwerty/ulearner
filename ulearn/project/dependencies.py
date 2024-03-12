@@ -17,5 +17,4 @@ def resolve_all_dependencies(initial_source: str, project_name: str):
         if aux_class.name in unresolved:
             unresolved.remove(aux_class.name)
             dependencies.append(aux_class)
-    print(dependencies)
     return dependencies

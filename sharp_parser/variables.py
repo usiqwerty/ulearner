@@ -22,6 +22,7 @@ class CSharpVar:
 def parse_field(field_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpVar:
     """
     Парсит поле класса
+    :param type_resolver: Резолвер шарповых типов
     :param field_node: нода treesitter
     :return: Объект поля класса
     """

@@ -4,6 +4,7 @@ import tree_sitter
 
 builtin_types = "void int bool char double string float Random".split()
 
+
 @dataclass
 class CSharpType:
     name: str
@@ -31,7 +32,6 @@ class TypeResolver:
         self.unresolved = []
         self.type_references = {builtin_type: self.create_dummy_type(builtin_type) for builtin_type in
                                 builtin_types}
-        self.type_references[None] = None
 
     def log(self):
         if self.unresolved:
@@ -41,7 +41,7 @@ class TypeResolver:
         self.log()
         return CSharpType(name, [])
 
-    def get_type(self, typename: str, is_array=False):
+    def get_type(self, typename: str):
         self.log()
         if typename == "DataPoint":
             pass

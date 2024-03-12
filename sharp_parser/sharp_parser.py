@@ -32,7 +32,7 @@ def parse_code_from_string(code: str) -> tuple[CSharpClass, list[str]]:
             ans = parse_class(child, type_resolver)
             break
         elif child.type == "record_declaration":
-            ans = parse_record(child)
+            ans = parse_record(child, type_resolver)
             break
     if not ans:
         raise Exception("No class in file")

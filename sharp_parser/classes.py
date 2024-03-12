@@ -35,9 +35,10 @@ class CSharpClass:
         return signature
 
 
-def parse_class(class_in_file: tree_sitter.Node, type_resolver:TypeResolver):
+def parse_class(class_in_file: tree_sitter.Node, type_resolver: TypeResolver):
     """
     Порсит класс C#
+    :param type_resolver: Резолвер шарповых типов
     :param class_in_file: treesitter нода класса
     :return: Объект класса
     """
