@@ -26,36 +26,33 @@ class CSharpMethod:
 
 def parse_method(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpMethod:
     modifiers = []
-    return_type: CSharpType = None
+    return_type: CSharpType = type_resolver.get_type('void')
     arguments = []
     method_name = None
     for child in method_node.children:
-        #method_node.child_by_field_name()
-        if child.type == "modifier":
-            modifiers.append(child.text.decode())
-        elif child.type in ["predefined_type", "array_type", "generic_name"]:
-            return_type = type_resolver.parse_type_node(child)
+        match child.type:
+            case "modifier":
+                modifiers.append(child.text.decode())
+            case "predefined_type" | "array_type" | "generic_name":
+                return_type = type_resolver.parse_type_node(child)
 
-        elif child.type == "identifier":
-            method_name = child.text.decode()
-        elif child.type == "parameter_list":
-            if len(child.named_children) == 0:
-                continue
-            parse_parameters(arguments, child, type_resolver)
+            case "identifier":
+                method_name = child.text.decode()
+            case "parameter_list":
+                if len(child.named_children) == 0:
+                    continue
+                parse_parameters(arguments, child, type_resolver)
 
     return CSharpMethod(modifiers, return_type, method_name, arguments)
 
 
-def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver:TypeResolver):
+def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver: TypeResolver):
     if params_node.named_child(0).type == "parameter":
         for param in params_node.named_children:
-            if param.child(0).text.decode()=="this":
+            if param.child(0).text.decode() == "this":
                 continue
             param_type = type_resolver.parse_type_node(param.child(0))
-            #param_type_str = param.child(0).text.decode()
-
             name = param.child(1).text.decode()
-
             arguments.append(CSharpVar([], param_type, name))
     else:
         param_type_str = params_node.named_child(0).text.decode()

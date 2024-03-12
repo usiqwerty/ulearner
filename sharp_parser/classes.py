@@ -47,16 +47,19 @@ def parse_class(class_in_file: tree_sitter.Node, type_resolver:TypeResolver):
     class_fields = []
     class_methods = []
     class_generics = []
+
     for child in class_in_file.children:
-        if child.type == "modifier":
-            class_modifiers.append(child.child(0).type)
-        if child.type == "identifier":
-            class_name = child.text.decode()
-        if child.type == "declaration_list":
-            class_body = child
-        if child.type == 'type_parameter_list':
-            for value_type in child.named_children:
-                class_generics.append(value_type.child(0).text.decode())
+        match child.type:
+            case "modifier":
+                class_modifiers.append(child.child(0).type)
+            case "identifier":
+                class_name = child.text.decode()
+            case "declaration_list":
+                class_body = child
+            case 'type_parameter_list':
+                for value_type in child.named_children:
+                    generic_vtype = type_resolver.get_type(value_type.child(0).text.decode())
+                    class_generics.append(generic_vtype)
     for child in class_body.named_children:
         if child.type == "field_declaration":
             class_fields.append(parse_field(child, type_resolver))

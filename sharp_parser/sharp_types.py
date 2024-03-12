@@ -54,15 +54,16 @@ class TypeResolver:
 
     def parse_type_node(self, type_node: tree_sitter.Node) -> CSharpType:
         self.log()
-        if type_node.type == "predefined_type":
-            return self.get_type(type_node.text.decode())
-        elif type_node.type == "generic_name":
-            return self.parse_generic_type(type_node)
-        elif type_node.type == "array_type":
-            value_type = self.parse_type_node(type_node.named_child(0))
-            return CSharpType(value_type.name, value_type.generic_types, True)
-        elif type_node.type == "identifier":
-            return self.get_type(type_node.text.decode())
+        match type_node.type:
+            case "predefined_type":
+                return self.get_type(type_node.text.decode())
+            case "generic_name":
+                return self.parse_generic_type(type_node)
+            case "array_type":
+                value_type = self.parse_type_node(type_node.named_child(0))
+                return CSharpType(value_type.name, value_type.generic_types, True)
+            case "identifier":
+                return self.get_type(type_node.text.decode())
         raise Exception('Unknown var type')
 
     def parse_generic_type(self, type_node: tree_sitter.Node) -> CSharpType:
