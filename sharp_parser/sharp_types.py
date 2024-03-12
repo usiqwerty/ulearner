@@ -2,10 +2,13 @@ from dataclasses import dataclass
 
 import tree_sitter
 
+builtin_types = "void int bool char double string float Random".split()
+
 @dataclass
 class CSharpType:
     name: str
     generic_types: list
+    is_array: bool = False
 
     @property
     def just_typename(self):
@@ -15,38 +18,60 @@ class CSharpType:
         signature = f"{self.name}"
         if self.generic_types:
             signature += f"<{', '.join(self.generic_types)}>"
+        if self.is_array:
+            signature += "[]"
         return signature
 
 
-def parse_generic_type(type_node: tree_sitter.Node) -> CSharpType:
-    type_class: str = None
-    value_types = []
-    for child in type_node.named_children:
-        if child.type == "identifier":
-            type_class = child.text.decode()
-        if child.type == 'type_argument_list':
-            value_types = [x.text.decode() for x in child.named_children]
-    return CSharpType(type_class, value_types) #CSharpClass([], type_class, [], value_types)
+class TypeResolver:
+    unresolved: list[str]
+    type_references: dict[str, CSharpType]
 
+    def __init__(self):
+        self.unresolved = []
+        self.type_references = {builtin_type: self.create_dummy_type(builtin_type) for builtin_type in
+                                builtin_types}
+        self.type_references[None] = None
 
-builtin_types="void int bool char double string float".split()
+    def log(self):
+        if self.unresolved:
+            pass
 
+    def create_dummy_type(self, name: str):
+        self.log()
+        return CSharpType(name, [])
 
-def create_dummy_type(name: str):
-    return CSharpType(name, []) #CSharpClass([], name, [], [])
+    def get_type(self, typename: str, is_array=False):
+        self.log()
+        if typename == "DataPoint":
+            pass
+        if typename not in self.type_references:
+            print(f"Unresolved type: {typename}")
+            self.unresolved.append(typename)
+            self.type_references[typename] = self.create_dummy_type(typename)
 
+        return self.type_references[typename]
 
-type_references: dict[str, CSharpType] = {builtin_type: create_dummy_type(builtin_type) for builtin_type in
-                                           builtin_types}
-unresolved: list[str] = []
+    def parse_type_node(self, type_node: tree_sitter.Node) -> CSharpType:
+        self.log()
+        if type_node.type == "predefined_type":
+            return self.get_type(type_node.text.decode())
+        elif type_node.type == "generic_name":
+            return self.parse_generic_type(type_node)
+        elif type_node.type == "array_type":
+            value_type = self.parse_type_node(type_node.named_child(0))
+            return CSharpType(value_type.name, value_type.generic_types, True)
+        elif type_node.type == "identifier":
+            return self.get_type(type_node.text.decode())
+        raise Exception('Unknown var type')
 
-
-class ArrayType(CSharpType):
-    value_type: CSharpType
-    def __init__(self, value_type: CSharpType):
-        self.value_type=value_type
-    @property
-    def just_typename(self):
-        return str(self)
-    def __repr__(self):
-        f"{self.value_type.just_typename}[]"
+    def parse_generic_type(self, type_node: tree_sitter.Node) -> CSharpType:
+        self.log()
+        type_class = ""
+        value_types = []
+        for child in type_node.named_children:
+            if child.type == "identifier":
+                type_class = child.text.decode()
+            if child.type == 'type_argument_list':
+                value_types = [self.get_type(x.text.decode()) for x in child.named_children]
+        return CSharpType(type_class, value_types)  # CSharpClass([], type_class, [], value_types)

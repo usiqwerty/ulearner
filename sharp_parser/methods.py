@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import tree_sitter
 
-from sharp_parser.sharp_types import create_dummy_type, type_references, unresolved, CSharpType, ArrayType
+from sharp_parser.sharp_types import CSharpType, TypeResolver
 from sharp_parser.variables import CSharpVar
 
 
@@ -18,49 +18,47 @@ class CSharpMethod:
         if self.modifiers:
             signature += ' '.join(self.modifiers) + " "
         if self.return_type:
-            signature += str(self.return_type.just_typename) + " "
-        signature += self.name+" "
-        signature += " (" + ', '.join(x.as_param for x in self.arguments) +")"
-        return signature+";"
+            signature += str(self.return_type) + " "
+        signature += self.name  # + " "
+        signature += "(" + ', '.join(x.as_param for x in self.arguments) + ")"
+        return signature + ";"
 
 
-def parse_method(method_node: tree_sitter.Node) -> CSharpMethod:
+def parse_method(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpMethod:
     modifiers = []
     return_type: CSharpType = None
     arguments = []
     method_name = None
     for child in method_node.children:
+        #method_node.child_by_field_name()
         if child.type == "modifier":
             modifiers.append(child.text.decode())
-        if child.type == "predefined_type":
-            return_type = type_references[child.text.decode()]
-        if child.type == "array_type":
-            vtype_str=child.named_child(0).text.decode()
+        elif child.type in ["predefined_type", "array_type", "generic_name"]:
+            return_type = type_resolver.parse_type_node(child)
 
-            return_type = ArrayType(type_references[vtype_str])
-        if child.type == "identifier":
+        elif child.type == "identifier":
             method_name = child.text.decode()
-        if child.type == "parameter_list":
-            if len(child.named_children)==0:
+        elif child.type == "parameter_list":
+            if len(child.named_children) == 0:
                 continue
-            if child.named_child(0).type =="parameter":
-                for param in child.named_children:
-                    type_str = param.child(0).text.decode()
-                    name = param.child(1).text.decode()
-                    if type_str not in type_references:
-                        unresolved.append(type_str)
-                        type_references[type_str] = create_dummy_type(type_str)
+            parse_parameters(arguments, child, type_resolver)
 
-                    arguments.append(CSharpVar(modifiers, type_references[type_str], name))
-            else:
-                type_str = child.named_child(0).text.decode()
-                name = child.named_child(1).text.decode()
-                if type_str not in type_references:
-                    unresolved.append(type_str)
-                    type_references[type_str] = create_dummy_type(type_str)
-
-                arguments.append(CSharpVar(modifiers, type_references[type_str], name))
-
-    if method_name=="Parser":
-        pass
     return CSharpMethod(modifiers, return_type, method_name, arguments)
+
+
+def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver:TypeResolver):
+    if params_node.named_child(0).type == "parameter":
+        for param in params_node.named_children:
+            if param.child(0).text.decode()=="this":
+                continue
+            param_type = type_resolver.parse_type_node(param.child(0))
+            #param_type_str = param.child(0).text.decode()
+
+            name = param.child(1).text.decode()
+
+            arguments.append(CSharpVar([], param_type, name))
+    else:
+        param_type_str = params_node.named_child(0).text.decode()
+        name = params_node.named_child(1).text.decode()
+
+        arguments.append(CSharpVar([], type_resolver.get_type(param_type_str), name))

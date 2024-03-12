@@ -10,7 +10,7 @@ from ulearn.project.manager import download_and_unzip
 faulthandler.enable()
 # TODO: здесь же устанавливать рабочий каталог для homework
 # и прокинуть туда config
-url = "https://ulearn.me/course/nand2tetris/Zadacha_CodeWriter_6b7304b6-8de1-49a5-8506-d32b68a68b39"
+url = "https://ulearn.me/course/basicprogramming2/Praktika_Eksponentsial_noe_sglazhivanie__c334ede2-2c35-4fcb-94cb-fb1c48e3e7bb"
 
 course_id, pid = parse_link(url)
 

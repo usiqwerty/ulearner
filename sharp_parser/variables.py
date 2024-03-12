@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import tree_sitter
 
-from sharp_parser.sharp_types import CSharpType, parse_generic_type
+from sharp_parser.sharp_types import CSharpType, TypeResolver
 
 
 @dataclass
@@ -13,12 +13,18 @@ class CSharpVar:
 
     @property
     def as_param(self):
-        return f"{self.var_type.just_typename} {self.name}"
+        return f"{self.var_type} {self.name}"
+
     def __repr__(self):
-        return f"{' '.join(self.modifiers)} {self.var_type.just_typename} {self.name};"
+        return f"{' '.join(self.modifiers)} {self.var_type} {self.name};"
 
 
-def parse_field(field_node: tree_sitter.Node) -> CSharpVar:
+def parse_field(field_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpVar:
+    """
+    Парсит поле класса
+    :param field_node: нода treesitter
+    :return: Объект поля класса
+    """
     modifiers = []
     var_type = None
     var_name = None
@@ -29,7 +35,7 @@ def parse_field(field_node: tree_sitter.Node) -> CSharpVar:
 
             for var_part in child.children:
                 if var_part.type == "generic_name":
-                    var_type = parse_generic_type(var_part)
+                    var_type = type_resolver.parse_generic_type(var_part)
                 if var_part.type == "variable_declarator":
                     var_name = var_part.child(0).text.decode()
             pass

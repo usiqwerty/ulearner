@@ -1,15 +1,46 @@
 from dataclasses import dataclass
 
-from sharp_parser.variables import parse_field
-from sharp_parser.methods import parse_method
+import tree_sitter
+
+from sharp_parser.methods import parse_method, CSharpMethod
+from sharp_parser.sharp_types import CSharpType, TypeResolver
+from sharp_parser.variables import parse_field, CSharpVar
 
 
-def parse_record(class_in_file):
+def parse_record(class_in_file, type_resolver: TypeResolver):
     print("рекорды нужно парстить")
-    return parse_class(class_in_file)
+    return parse_class(class_in_file, type_resolver)
 
 
-def parse_class(class_in_file):
+@dataclass
+class CSharpClass:
+    """Класс в языке C#"""
+    modifiers: list[str]
+    name: str
+    body: list[CSharpVar | CSharpMethod]
+    generic_types: list[CSharpType]
+
+    def __repr__(self):
+        signature = ""
+        if self.modifiers:
+            signature += ' '.join(self.modifiers) + ' '
+        signature += f"class {self.name}"
+        if self.generic_types:
+            signature += f"<{', '.join(self.generic_types)}>"
+        signature += " {\n"
+        for thing in self.body:
+            # thing: CSharpVar | CSharpMethod
+            signature += " " * 4 + str(thing) + '\n'
+        signature += "}"
+        return signature
+
+
+def parse_class(class_in_file: tree_sitter.Node, type_resolver:TypeResolver):
+    """
+    Порсит класс C#
+    :param class_in_file: treesitter нода класса
+    :return: Объект класса
+    """
     class_modifiers = []
     class_name = None
     class_body = None
@@ -28,38 +59,8 @@ def parse_class(class_in_file):
                 class_generics.append(value_type.child(0).text.decode())
     for child in class_body.named_children:
         if child.type == "field_declaration":
-            class_fields.append(parse_field(child))
+            class_fields.append(parse_field(child, type_resolver))
         if child.type == "method_declaration":
-            class_methods.append(parse_method(child))
+            class_methods.append(parse_method(child, type_resolver))
     ans = CSharpClass(class_modifiers, class_name, class_fields + class_methods, class_generics)
     return ans
-
-
-@dataclass
-class CSharpClass:
-    modifiers: list[str]
-    name: str
-    body: list  #: list[CSharpVar | CSharpMethod]
-    generic_types: list  # CSharpClass
-
-    @property
-    def just_typename(self):
-        typename = self.name
-        if self.generic_types:
-            typename+= f"<{', '.join(self.generic_types)}>"
-        return typename
-    def __repr__(self):
-        signature = ""
-        if self.modifiers:
-            signature += ' '.join(self.modifiers) + ' '
-        signature += f"class {self.name}"
-        if self.generic_types:
-            signature += f"<{', '.join(self.generic_types)}>"
-        signature += " {\n"
-        for thing in self.body:
-            #thing: CSharpVar | CSharpMethod
-            signature += " " * 4 + str(thing) + '\n'
-        signature += "}"
-        return signature
-
-

@@ -36,6 +36,7 @@ def parse_homework(blocks):
         project_link: str = a_tag['href']
         if project_link.endswith('.zip'):
             project = extract_project_name(project_link)
+            break
         a_tag.decompose()
 
     #TODO: какие-то магические числа, почему именно len(x)>1 ???
