@@ -61,6 +61,9 @@ def parse_class(class_in_file: tree_sitter.Node, type_resolver: TypeResolver):
                 for value_type in child.named_children:
                     generic_vtype = type_resolver.get_type(value_type.child(0).text.decode())
                     class_generics.append(generic_vtype)
+            case "base_list":
+                for base in child.named_children:
+                    type_resolver.parse_type_node(base)
     for child in class_body.named_children:
         if child.type == "field_declaration":
             class_fields.append(parse_field(child, type_resolver))

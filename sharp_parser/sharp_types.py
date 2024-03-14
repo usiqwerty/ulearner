@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import tree_sitter
 
-builtin_types = "void int bool char double string float Random".split()
+builtin_types = "void object int bool char double string float byte Random".split()
 
 
 @dataclass
@@ -43,8 +43,6 @@ class TypeResolver:
 
     def get_type(self, typename: str):
         self.log()
-        if typename == "DataPoint":
-            pass
         if typename not in self.type_references:
             print(f"Unresolved type: {typename}")
             self.unresolved.append(typename)
@@ -75,4 +73,7 @@ class TypeResolver:
                 type_class = child.text.decode()
             if child.type == 'type_argument_list':
                 value_types = [self.get_type(x.text.decode()) for x in child.named_children]
-        return CSharpType(type_class, value_types)  # CSharpClass([], type_class, [], value_types)
+        self.get_type(type_class)
+        for x in value_types:
+            self.get_type(x.name)
+        return CSharpType(type_class, value_types)
