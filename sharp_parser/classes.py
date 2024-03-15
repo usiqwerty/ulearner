@@ -26,7 +26,7 @@ class CSharpClass:
             signature += ' '.join(self.modifiers) + ' '
         signature += f"class {self.name}"
         if self.generic_types:
-            signature += f"<{', '.join(self.generic_types)}>"
+            signature += f"<{', '.join(str(x) for x in self.generic_types)}>"
         signature += " {\n"
         for thing in self.body:
             # thing: CSharpVar | CSharpMethod
