@@ -2,49 +2,52 @@ from tree_sitter_languages import get_language, get_parser
 
 from sharp_parser.classes import parse_record, parse_class, CSharpClass
 from sharp_parser.interfaces import parse_interface
-from sharp_parser.sharp_types import TypeResolver
+from sharp_parser.namespace import CSharpNamespace
 
 language = get_language('c_sharp')
 parser = get_parser('c_sharp')
 
 
-class NoClassInFile(Exception):
-    pass
-
-
-def parse_code_from_string(code: str, type_resolver: TypeResolver) -> tuple[CSharpClass, list[str]]:
+def parse_code_from_string(code: str, namespace: CSharpNamespace) -> list[CSharpClass]:  # -> tuple[CSharpClass, list[str]]
     """
-    Парсит класс из файла
+    Парсит файл и записывает в namespace
     :param code: Код на C#
-    :return: Распаршенный класс и список неизвестных имён классов
+    :param namespace: Пространство имён, в котором идёт парсинг
+    :return: Зависимости кода
     """
 
     tree = parser.parse(code.encode())
+    namespace_piece = None
 
-    namespace = None
     for child in tree.root_node.children:
         if child.type == 'file_scoped_namespace_declaration':
-            namespace = child
+            namespace_piece = child
             break
         if child.type == 'namespace_declaration':
+            # TODO: делать или нет?
             raise Exception("Use file-scoped namespaces")
-    if not namespace:
+
+    if not namespace_piece:
         raise Exception("No namespace")
-
-    if not namespace.children:
+    if not namespace_piece.children:
         raise Exception("Empty namespace")
-    ans = None
-    for child in namespace.children:
-        if child.type == 'class_declaration':
-            ans = parse_class(child, type_resolver)
-            break
-        elif child.type == "record_declaration":
-            ans = parse_record(child, type_resolver)
-            break
-        elif child.type == "interface_declaration":
-            ans = parse_interface(child, type_resolver)
-            break
-    if not ans:
-        raise NoClassInFile()
 
-    return ans, type_resolver.unresolved
+    dependencies = []
+    for child in namespace_piece.children:
+        match child.type:
+            case 'class_declaration':
+                ans = parse_class(child, namespace.type_resolver)
+                if ans.name in namespace.type_resolver.unresolved:
+                    dependencies.append(ans)
+                namespace.defined_classes.append(ans)
+            case "record_declaration":
+                ans = parse_record(child, namespace.type_resolver)
+                if ans.name in namespace.type_resolver.unresolved:
+                    dependencies.append(ans)
+                namespace.defined_classes.append(ans)
+            case "interface_declaration":
+                ans = parse_interface(child, namespace.type_resolver)
+                if ans.name in namespace.type_resolver.unresolved:
+                    dependencies.append(ans)
+                namespace.defined_interfaces.append(ans)
+    return dependencies

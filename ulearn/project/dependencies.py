@@ -1,25 +1,17 @@
 from file_manager.explorer import list_all_files, get_code_file
-from sharp_parser.sharp_parser import parse_code_from_string, NoClassInFile
-from sharp_parser.sharp_types import TypeResolver
+from sharp_parser.classes import CSharpClass
+from sharp_parser.namespace import CSharpNamespace
+from sharp_parser.sharp_parser import parse_code_from_string
 
 
-def resolve_all_dependencies(initial_source: str, project_name: str):
-    type_resolver = TypeResolver()
-    initial_class, unresolved = parse_code_from_string(initial_source, type_resolver)
-    project_files = list_all_files(project_name)
-
+def resolve_all_dependencies(initial_source: str, project_name: str) -> list[CSharpClass]:
     dependencies = []
-    for file in project_files:
-        aux_source = get_code_file(project_name, file, "")
-        try:
-            aux_class, _ = parse_code_from_string(aux_source, type_resolver)
-        except NoClassInFile:
-            continue
+    namespace = CSharpNamespace()
 
-        if not aux_class:
-            continue
+    parse_code_from_string(initial_source, namespace)
 
-        if aux_class.name in unresolved:
-            unresolved.remove(aux_class.name)
-            dependencies.append(aux_class)
+    for filename in list_all_files(project_name):
+        aux_source = get_code_file(project_name, filename, "")
+        dependencies += parse_code_from_string(aux_source, namespace)
+
     return dependencies
