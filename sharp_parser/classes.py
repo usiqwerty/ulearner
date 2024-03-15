@@ -2,37 +2,21 @@ from dataclasses import dataclass
 
 import tree_sitter
 
+from sharp_parser.interfaces import CSharpInterface
 from sharp_parser.methods import parse_method, CSharpMethod
 from sharp_parser.sharp_types import CSharpType, TypeResolver
 from sharp_parser.variables import parse_field, CSharpVar
 
 
 def parse_record(class_in_file, type_resolver: TypeResolver):
-    print("рекорды нужно парстить")
+    raise Exception("рекорды нужно парстить")
+
     return parse_class(class_in_file, type_resolver)
 
 
-@dataclass
-class CSharpClass:
+class CSharpClass (CSharpInterface):
     """Класс в языке C#"""
-    modifiers: list[str]
-    name: str
-    body: list[CSharpVar | CSharpMethod]
-    generic_types: list[CSharpType]
-
-    def __repr__(self):
-        signature = ""
-        if self.modifiers:
-            signature += ' '.join(self.modifiers) + ' '
-        signature += f"class {self.name}"
-        if self.generic_types:
-            signature += f"<{', '.join(str(x) for x in self.generic_types)}>"
-        signature += " {\n"
-        for thing in self.body:
-            # thing: CSharpVar | CSharpMethod
-            signature += " " * 4 + str(thing) + '\n'
-        signature += "}"
-        return signature
+    syntax_name = "class"
 
 
 def parse_class(class_in_file: tree_sitter.Node, type_resolver: TypeResolver):

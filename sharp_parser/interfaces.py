@@ -1,6 +1,34 @@
-from sharp_parser.classes import CSharpClass
-from sharp_parser.methods import parse_method
-from sharp_parser.variables import parse_field
+from dataclasses import dataclass
+
+
+from sharp_parser.methods import parse_method, CSharpMethod
+from sharp_parser.sharp_types import CSharpType
+from sharp_parser.variables import parse_field, CSharpVar
+
+
+@dataclass
+class CSharpInterface:
+    """Интерфейс в языке C#"""
+    modifiers: list[str]
+    name: str
+    body: list[CSharpVar | CSharpMethod]
+    generic_types: list[CSharpType]
+    syntax_name = "interface"
+
+    def __repr__(self):
+        signature = ""
+        if self.modifiers:
+            signature += ' '.join(self.modifiers) + ' '
+        signature += f"{self.syntax_name} {self.name}"
+
+        if self.generic_types:
+            signature += f"<{', '.join(str(x) for x in self.generic_types)}>"
+        signature += " {\n"
+        for thing in self.body:
+            # thing: CSharpVar | CSharpMethod
+            signature += " " * 4 + str(thing) + '\n'
+        signature += "}"
+        return signature
 
 
 def parse_interface(class_in_file, type_resolver):
@@ -31,5 +59,5 @@ def parse_interface(class_in_file, type_resolver):
             class_fields.append(parse_field(child, type_resolver))
         if child.type == "method_declaration":
             class_methods.append(parse_method(child, type_resolver))
-    ans = CSharpClass(class_modifiers, class_name, class_fields + class_methods, class_generics)
+    ans = CSharpInterface(class_modifiers, class_name, class_fields + class_methods, class_generics)
     return ans
