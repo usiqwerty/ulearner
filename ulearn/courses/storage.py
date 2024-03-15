@@ -1,8 +1,6 @@
 import json
 import os.path
 
-import pydantic
-
 from ulearn.courses.course import SlideProgress, UlearnCourse
 
 filename = os.path.join("userdata", "courses.json")

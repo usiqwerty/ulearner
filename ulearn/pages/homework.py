@@ -45,7 +45,7 @@ def parse_homework(blocks):
 
     #TODO: какие-то магические числа, почему именно len(x)>1 ???
     # вообще, надо как-то нормально преобразовывать в текст
-    prelude = '\n'.join(x.replace('\n', ' ') for x in content.stripped_strings if len(x) > 1)
+    prelude = '\n'.join(x.replace('\n', ' ') for x in content.stripped_strings) # if len(x) > 1
     main_source = get_code_file(project, code_file_name, project_link)
     #
     deps = resolve_all_dependencies(main_source, project)
