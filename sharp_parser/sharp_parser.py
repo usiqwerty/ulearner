@@ -1,19 +1,24 @@
 from tree_sitter_languages import get_language, get_parser
 
 from sharp_parser.classes import parse_record, parse_class, CSharpClass
+from sharp_parser.interfaces import parse_interface
 from sharp_parser.sharp_types import TypeResolver
 
 language = get_language('c_sharp')
 parser = get_parser('c_sharp')
 
 
-def parse_code_from_string(code: str) -> tuple[CSharpClass, list[str]]:
+class NoClassInFile(Exception):
+    pass
+
+
+def parse_code_from_string(code: str, type_resolver: TypeResolver) -> tuple[CSharpClass, list[str]]:
     """
     Парсит класс из файла
     :param code: Код на C#
     :return: Распаршенный класс и список неизвестных имён классов
     """
-    type_resolver = TypeResolver()
+
     tree = parser.parse(code.encode())
 
     namespace = None
@@ -21,6 +26,8 @@ def parse_code_from_string(code: str) -> tuple[CSharpClass, list[str]]:
         if child.type == 'file_scoped_namespace_declaration':
             namespace = child
             break
+        if child.type == 'namespace_declaration':
+            raise Exception("Use file-scoped namespaces")
     if not namespace:
         raise Exception("No namespace")
 
@@ -34,7 +41,10 @@ def parse_code_from_string(code: str) -> tuple[CSharpClass, list[str]]:
         elif child.type == "record_declaration":
             ans = parse_record(child, type_resolver)
             break
+        elif child.type == "interface_declaration":
+            ans = parse_interface(child, type_resolver)
+            break
     if not ans:
-        raise Exception("No class in file")
+        raise NoClassInFile()
 
     return ans, type_resolver.unresolved
