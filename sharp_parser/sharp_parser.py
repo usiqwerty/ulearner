@@ -8,7 +8,7 @@ language = get_language('c_sharp')
 parser = get_parser('c_sharp')
 
 
-def parse_code_from_string(code: str, namespace: CSharpNamespace) -> list[CSharpClass]:  # -> tuple[CSharpClass, list[str]]
+def parse_code_from_string(code: str, namespace: CSharpNamespace) -> list[CSharpClass]:
     """
     Парсит файл и записывает в namespace
     :param code: Код на C#

@@ -28,12 +28,12 @@ class HomeworkPage(UlearnPage):
                 self.initial_code_file)
 
 
-def parse_homework(blocks):
-    task = blocks['html']
-    initial_content = blocks['exercise']['exerciseInitialCode'].replace('\n', '')
+def parse_homework(blocks: dict[str, list[dict]]):
+    task_blocks = blocks['html']
+    initial_content = blocks['exercise'][0]['exerciseInitialCode'].replace('\n', '')
     code_file_name = get_requested_file_name(initial_content)
 
-    content = bs(task['content'], "html.parser")
+    content = bs(''.join(x['content'] for x in task_blocks), "html.parser")
     project = ""
     project_link = ""
     for a_tag in content.find_all('a'):
@@ -42,7 +42,8 @@ def parse_homework(blocks):
             project = extract_project_name(project_link)
             break
         a_tag.decompose()
-
+    if not project:
+        raise Exception("No project")
     #TODO: какие-то магические числа, почему именно len(x)>1 ???
     # вообще, надо как-то нормально преобразовывать в текст
     prelude = '\n'.join(x.replace('\n', ' ') for x in content.stripped_strings) # if len(x) > 1

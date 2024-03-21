@@ -35,8 +35,9 @@ class LecturePage(UlearnPage):
 
 
 # TODO: суть плохое слово здесь
-def parse_lesson(blocks: dict[str, dict], page_id, title, config: UlearnConfig):
-    video = blocks.get('video') or blocks.get('youtube')
+def parse_lesson(blocks: dict[str, list[dict]], page_id, title, config: UlearnConfig):
+    video_blocks = blocks.get('video') or blocks.get('youtube')
+    video = video_blocks[0]
     code_block = blocks.get('code')
 
     # if not code_block:
