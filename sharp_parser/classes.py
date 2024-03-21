@@ -6,8 +6,7 @@ from sharp_parser.sharp_types import TypeResolver
 
 def parse_record(class_in_file, type_resolver: TypeResolver):
     raise Exception("рекорды нужно парстить")
-
-    return parse_class(class_in_file, type_resolver)
+    # return parse_class(class_in_file, type_resolver)
 
 
 class CSharpClass(CSharpInterface):

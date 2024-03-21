@@ -18,7 +18,7 @@ class CSharpType:
     def __repr__(self):
         signature = f"{self.name}"
         if self.generic_types:
-            signature += f"<{', '.join(self.generic_types)}>"
+            signature += f"<{', '.join(str(x) for x in self.generic_types)}>"
         if self.is_array:
             signature += "[]"
         return signature
