@@ -24,8 +24,7 @@ def parse_code_from_string(code: str, namespace: CSharpNamespace) -> list[CSharp
             namespace_piece = child
             break
         if child.type == 'namespace_declaration':
-            # TODO: делать или нет?
-            raise Exception("Use file-scoped namespaces")
+            namespace_piece = child.named_children[-1]
 
     if not namespace_piece:
         raise Exception("No namespace")
