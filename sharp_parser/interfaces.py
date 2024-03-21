@@ -54,7 +54,7 @@ def parse_interface(interface_in_file, type_resolver):
                 interface_body = child
             case 'type_parameter_list':
                 for value_type in child.named_children:
-                    generic_vtype = type_resolver.get_type(value_type.child(0).text.decode())
+                    generic_vtype = type_resolver.get_type_by_name(value_type.child(0).text.decode())
                     interface_generics.append(generic_vtype)
             case "base_list":
                 for base in child.named_children:

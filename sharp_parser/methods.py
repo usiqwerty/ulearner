@@ -26,7 +26,7 @@ class CSharpMethod:
 
 def parse_method(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpMethod:
     modifiers = []
-    return_type: CSharpType = type_resolver.get_type('void')
+    return_type: CSharpType = type_resolver.get_type_by_name('void')
     arguments = []
     method_name = None
     for child in method_node.children:
@@ -58,4 +58,4 @@ def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver: Ty
         param_type_str = params_node.named_child(0).text.decode()
         name = params_node.named_child(1).text.decode()
 
-        arguments.append(CSharpVar([], type_resolver.get_type(param_type_str), name))
+        arguments.append(CSharpVar([], type_resolver.get_type_by_name(param_type_str), name))

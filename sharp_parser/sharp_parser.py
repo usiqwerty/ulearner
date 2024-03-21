@@ -38,15 +38,19 @@ def parse_code_from_string(code: str, namespace: CSharpNamespace) -> list[CSharp
                 ans = parse_class(child, namespace.type_resolver)
                 if ans.name in namespace.type_resolver.unresolved:
                     dependencies.append(ans)
-                namespace.defined_classes.append(ans)
+                    namespace.defined_classes.append(ans)
+                    namespace.type_resolver.mark_type_as_resolved(ans.name)
             case "record_declaration":
                 ans = parse_record(child, namespace.type_resolver)
                 if ans.name in namespace.type_resolver.unresolved:
                     dependencies.append(ans)
-                namespace.defined_classes.append(ans)
+                    namespace.defined_classes.append(ans)
+                    namespace.type_resolver.mark_type_as_resolved(ans.name)
             case "interface_declaration":
                 ans = parse_interface(child, namespace.type_resolver)
                 if ans.name in namespace.type_resolver.unresolved:
                     dependencies.append(ans)
-                namespace.defined_interfaces.append(ans)
+                    namespace.defined_interfaces.append(ans)
+                    namespace.type_resolver.mark_type_as_resolved(ans.name)
+
     return dependencies

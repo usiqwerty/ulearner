@@ -14,4 +14,6 @@ def resolve_all_dependencies(initial_source: str, project_name: str) -> list[CSh
         aux_source = get_code_file(project_name, filename, "")
         dependencies += parse_code_from_string(aux_source, namespace)
 
+    if namespace.type_resolver.unresolved:
+        raise Exception(f"Unresolved dependencies: {namespace.type_resolver.unresolved}")
     return dependencies
