@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
 
-from sharp_parser.methods import parse_method, CSharpMethod, parse_operator
-from sharp_parser.properties import parse_property
+from sharp_parser.functions.methods import parse_method, CSharpMethod, parse_operator
+from sharp_parser.functions.properties import parse_property
 from sharp_parser.sharp_types import CSharpType
-from sharp_parser.variables import parse_field, CSharpVar
+from sharp_parser.vars.variables import parse_field, CSharpVar
 
 
 @dataclass

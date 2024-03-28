@@ -1,5 +1,5 @@
-from sharp_parser.classes import CSharpClass
-from sharp_parser.interfaces import CSharpInterface
+from sharp_parser.oop.classes import CSharpClass
+from sharp_parser.oop.interfaces import CSharpInterface
 from sharp_parser.sharp_types import TypeResolver
 
 

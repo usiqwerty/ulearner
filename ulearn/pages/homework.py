@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup as bs
 from file_manager.explorer import get_code_file
 from file_manager.explorer import get_requested_file_name
-from sharp_parser.classes import CSharpClass
+from sharp_parser.oop.classes import CSharpClass
 from ulearn.pages.page import UlearnPage
 from ulearn.project.manager import extract_project_name
 from ulearn.project.dependencies import resolve_all_dependencies

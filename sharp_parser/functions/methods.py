@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import tree_sitter
 
 from sharp_parser.sharp_types import CSharpType, TypeResolver
-from sharp_parser.variables import CSharpVar
+from sharp_parser.vars.variables import CSharpVar
 
 
 @dataclass

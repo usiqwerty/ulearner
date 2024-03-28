@@ -1,6 +1,6 @@
 import tree_sitter
 
-from sharp_parser.interfaces import CSharpInterface, parse_interface
+from sharp_parser.oop.interfaces import CSharpInterface, parse_interface
 from sharp_parser.sharp_types import TypeResolver
 
 

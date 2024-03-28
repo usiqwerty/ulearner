@@ -1,6 +1,6 @@
 from file_manager.explorer import list_all_files, get_code_file
-from sharp_parser.classes import CSharpClass
-from sharp_parser.namespace import CSharpNamespace
+from sharp_parser.oop.classes import CSharpClass
+from sharp_parser.oop.namespace import CSharpNamespace
 from sharp_parser.sharp_parser import parse_code_from_string
 
 
