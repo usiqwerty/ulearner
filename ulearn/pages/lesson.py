@@ -37,17 +37,21 @@ class LecturePage(UlearnPage):
 # TODO: суть плохое слово здесь
 def parse_lesson(blocks: dict[str, list[dict]], page_id, title, config: UlearnConfig):
     video_blocks = blocks.get('video') or blocks.get('youtube')
-    video = video_blocks[0]
-    code_block = blocks.get('code')
-
-    # if not code_block:
-    #     raise Exception('В лекции нет блока с кодом')
-    video_id = video['videoId']
-    annotation = video['annotation']
-    fragments = annotation['fragments']
     timecodes = {}
-    for frag in fragments:
-        timecodes[frag['offset']] = frag['text']
-    code_conspect = code_block['code'] if code_block else None
+    video_id = None
+    code_blocks = blocks.get('code')
+
+    # if not code_blocks:
+    #     raise Exception('В лекции нет блока с кодом')
+    if video_blocks:
+        video = video_blocks[0]
+        video_id = video['videoId']
+        annotation = video['annotation']
+        fragments = annotation['fragments']
+
+        for frag in fragments:
+            timecodes[frag['offset']] = frag['text']
+
+    code_conspect = code_blocks[0]['code'] if code_blocks else None
     comments = get_comments(page_id, config.course.code)
     return LecturePage(title, timecodes, code_conspect, comments, config, video_id)
