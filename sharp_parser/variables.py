@@ -35,6 +35,8 @@ def parse_field(field_node: tree_sitter.Node, type_resolver: TypeResolver) -> CS
         if child.type == "variable_declaration":
 
             for var_part in child.children:
+                if var_part.type == "identifier":
+                    var_type = type_resolver.get_type_by_name(var_part.text.decode())
                 if var_part.type == "generic_name":
                     var_type = type_resolver.parse_generic_type_node(var_part)
                 if var_part.type == "variable_declarator":

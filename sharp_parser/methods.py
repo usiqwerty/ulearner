@@ -55,7 +55,7 @@ def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver: Ty
             name = param.child(1).text.decode()
             arguments.append(CSharpVar([], param_type, name))
     else:
-        param_type_str = params_node.named_child(0).text.decode()
         name = params_node.named_child(1).text.decode()
+        var_type = type_resolver.parse_type_node(params_node.named_child(0))
 
-        arguments.append(CSharpVar([], type_resolver.get_type_by_name(param_type_str), name))
+        arguments.append(CSharpVar([], var_type, name))

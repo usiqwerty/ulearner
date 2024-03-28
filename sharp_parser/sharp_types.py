@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import tree_sitter
 
-builtin_types = "void object int bool char double string float byte Random Func Action Dictionary List".split()
+builtin_types = "void object int bool char double string float byte Random Func Action Dictionary List IEnumerable".split()
 
 
 @dataclass
@@ -46,7 +46,8 @@ class TypeResolver:
         return self.type_references[typename]
 
     def mark_type_as_resolved(self, typename: str):
-        self.unresolved.remove(typename)
+        if typename in self.unresolved:
+            self.unresolved.remove(typename)
         if typename not in self.type_references:
             self.type_references[typename] = create_dummy_type(typename)
 
