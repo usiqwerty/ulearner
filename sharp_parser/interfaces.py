@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 
 from sharp_parser.methods import parse_method, CSharpMethod
+from sharp_parser.properties import parse_property
 from sharp_parser.sharp_types import CSharpType
 from sharp_parser.variables import parse_field, CSharpVar
 
@@ -60,9 +61,15 @@ def parse_interface(interface_in_file, type_resolver):
                 for base in child.named_children:
                     type_resolver.parse_type_node(base)
     for child in interface_body.named_children:
-        if child.type == "field_declaration":
-            interface_fields.append(parse_field(child, type_resolver))
-        if child.type == "method_declaration":
-            interface_methods.append(parse_method(child, type_resolver))
+        match child.type:
+            case "field_declaration":
+                interface_fields.append(parse_field(child, type_resolver))
+            case "method_declaration":
+                interface_methods.append(parse_method(child, type_resolver))
+            case "property_declaration":
+                x= parse_property(child, type_resolver)
+                interface_fields.append(x)
+            case "operator_declaration":
+                pass
     ans = CSharpInterface(interface_modifiers, interface_name, interface_fields + interface_methods, interface_generics)
     return ans
