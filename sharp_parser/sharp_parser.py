@@ -1,6 +1,7 @@
 from tree_sitter_languages import get_language, get_parser
 
-from sharp_parser.classes import parse_record, parse_class, CSharpClass
+from sharp_parser.classes import parse_class, CSharpClass
+from sharp_parser.records import parse_record
 from sharp_parser.delegates import parse_delegate
 from sharp_parser.enums import parse_enum, CSharpEnum
 from sharp_parser.interfaces import parse_interface
