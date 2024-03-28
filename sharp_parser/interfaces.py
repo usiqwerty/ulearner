@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-from sharp_parser.methods import parse_method, CSharpMethod
+from sharp_parser.methods import parse_method, CSharpMethod, parse_operator
 from sharp_parser.properties import parse_property
 from sharp_parser.sharp_types import CSharpType
 from sharp_parser.variables import parse_field, CSharpVar
@@ -67,9 +67,9 @@ def parse_interface(interface_in_file, type_resolver):
             case "method_declaration":
                 interface_methods.append(parse_method(child, type_resolver))
             case "property_declaration":
-                x= parse_property(child, type_resolver)
+                x = parse_property(child, type_resolver)
                 interface_fields.append(x)
             case "operator_declaration":
-                pass
+                interface_methods.append(parse_operator(child, type_resolver))
     ans = CSharpInterface(interface_modifiers, interface_name, interface_fields + interface_methods, interface_generics)
     return ans

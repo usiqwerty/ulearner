@@ -59,3 +59,33 @@ def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver: Ty
         var_type = type_resolver.parse_type_node(params_node.named_child(0))
 
         arguments.append(CSharpVar([], var_type, name))
+
+
+def parse_operator(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpMethod:
+    modifiers = []
+    return_type: CSharpType = None #type_resolver.get_type_by_name('void')
+    arguments = []
+    method_name = None
+
+    for child in method_node.children:
+        match child.type:
+            case "modifier":
+                modifiers.append(child.text.decode())
+            case "predefined_type" | "array_type" | "generic_name":
+
+                return_type = type_resolver.parse_type_node(child)
+            case "+" | "-" | "*" | "/" | "==" | "^" | "%" | ">>" | "<<":
+                method_name = "operator "+child.text.decode()
+            case "identifier":
+                if not return_type:
+                    return_type = type_resolver.get_type_by_name(child.text.decode())
+                else:
+                    method_name = child.text.decode()
+
+            case "parameter_list":
+                if len(child.named_children) == 0:
+                    continue
+                parse_parameters(arguments, child, type_resolver)
+
+    return CSharpMethod(modifiers, return_type, method_name, arguments)
+
