@@ -49,7 +49,7 @@ def parse_method(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> 
 def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver: TypeResolver):
     if params_node.named_child(0).type == "parameter":
         for param in params_node.named_children:
-            if param.child(0).text.decode() == "this":
+            if not param.children or param.child(0).text.decode() == "this":
                 continue
             param_type = type_resolver.parse_type_node(param.child(0))
             name = param.child(1).text.decode()
