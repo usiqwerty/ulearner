@@ -4,44 +4,57 @@ from sharp_parser.sharp_types import TypeResolver
 from sharp_parser.vars.variables import CSharpVar
 
 
-def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver: TypeResolver):
-    is_params = False
-    if params_node.named_child(0).type == "parameter":
-        for param in params_node.children:
-            if param.type in [',', '(', ')']: continue
+def parse_multiple_parameters(parameters_children: list[tree_sitter.Node], type_resolver):
+    params = []
+    modifiers = []
+    ptype = None
+    pname = None
 
-            match param.type:
-                case "params":
-                    is_params = True
-                    continue
-                case "parameter":
-                    if not param.children or param.child(0).text.decode() == "this":
-                        continue
-                    param_type = type_resolver.parse_type_node(param.child(0))
-                    name = param.child(1).text.decode()
-                    arguments.append(CSharpVar([], param_type, name))
-                    param_type = None
-                    name = None
-                    continue
-                case "identifier":
-                    if not param_type:
-                        param_type = type_resolver.get_type_by_name(param.text.decode())
-                    else:
-                        name = param.text.decode()
-                case "array_type":
-                    param_type = type_resolver.parse_type_node(param)
-                case _:
-                    param_type = type_resolver.get_type_by_name(param.text.decode())
-            if not name:
-                pass
-            if param_type.name == "Args":
-                pass
-            if not name:
+    for param in parameters_children:
+        match param.type:
+            case '(':
                 continue
-            arguments.append(CSharpVar(["params"] if is_params else [], param_type, name))
-            is_params = False
+            case ',' | '(' | ')':
+                if ptype:
+                    params.append((modifiers, ptype, pname))
+                ptype = None
+                pname = None
+                modifiers = []
+            case "params":
+                modifiers.append("params")
+            case "identifier":
+                if not ptype:
+                    ptype = type_resolver.get_type_by_name(param.text.decode())
+                else:
+                    pname = param.text.decode()
+            case "array_type":
+                ptype = type_resolver.parse_type_node(param)
+            case "parameter":
+                if not param.children:
+                    continue
+                if param.child(0).text.decode() == "this":
+                    modifiers.append("this")
+                    continue
+                ptype = type_resolver.parse_type_node(param.child(0))
+                pname = param.child(1).text.decode()
+                params.append((modifiers, ptype, pname))
+
+                ptype = None
+                pname = None
+                modifiers = []
+                continue
+            case _:
+                ptype = type_resolver.get_type_by_name(param.text.decode())
+
+    return params
+
+
+def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver: TypeResolver):
+    if params_node.named_child(0).type == "parameter":
+        for pmod, ptype, pname in parse_multiple_parameters(params_node.children, type_resolver):
+            arguments.append(CSharpVar(pmod, ptype, pname))
     else:
         name = params_node.named_child(1).text.decode()
         var_type = type_resolver.parse_type_node(params_node.named_child(0))
 
-        arguments.append(CSharpVar(["params"] if is_params else [], var_type, name))
+        arguments.append(CSharpVar([], var_type, name))
