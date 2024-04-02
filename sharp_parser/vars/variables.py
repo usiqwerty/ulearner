@@ -13,7 +13,7 @@ class CSharpVar:
 
     @property
     def as_param(self):
-        return f"{self.var_type} {self.name}"
+        return f"{'params ' if 'params' in self.modifiers else ''}{self.var_type} {self.name}"
 
     def __repr__(self):
         return f"{' '.join(self.modifiers)} {self.var_type} {self.name};"
