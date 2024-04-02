@@ -1,5 +1,5 @@
 from sharp_parser.oop.classes import CSharpClass, parse_class
-from sharp_parser.functions.methods import parse_parameters
+from sharp_parser.functions.parameters import parse_parameters
 from sharp_parser.sharp_types import TypeResolver
 from sharp_parser.vars.variables import CSharpVar
 

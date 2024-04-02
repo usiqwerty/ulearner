@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import tree_sitter
 
+from sharp_parser.functions.parameters import parse_parameters
 from sharp_parser.sharp_types import CSharpType, TypeResolver
 from sharp_parser.vars.variables import CSharpVar
 
@@ -44,21 +45,6 @@ def parse_method(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> 
                 parse_parameters(arguments, child, type_resolver)
 
     return CSharpMethod(modifiers, return_type, method_name, arguments)
-
-
-def parse_parameters(arguments, params_node: tree_sitter.Node, type_resolver: TypeResolver):
-    if params_node.named_child(0).type == "parameter":
-        for param in params_node.named_children:
-            if not param.children or param.child(0).text.decode() == "this":
-                continue
-            param_type = type_resolver.parse_type_node(param.child(0))
-            name = param.child(1).text.decode()
-            arguments.append(CSharpVar([], param_type, name))
-    else:
-        name = params_node.named_child(1).text.decode()
-        var_type = type_resolver.parse_type_node(params_node.named_child(0))
-
-        arguments.append(CSharpVar([], var_type, name))
 
 
 def parse_operator(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpMethod:

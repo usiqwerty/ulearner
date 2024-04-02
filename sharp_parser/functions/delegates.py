@@ -1,7 +1,7 @@
 import tree_sitter
 
 import sharp_parser.sharp_types
-from sharp_parser.functions.methods import parse_parameters
+from sharp_parser.functions.parameters import parse_parameters
 from sharp_parser.vars.variables import CSharpVar
 
 
