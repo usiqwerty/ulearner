@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 import tree_sitter
 
-builtin_types = "void object int bool char double string float byte Random Func Action Dictionary List IEnumerable".split()
+builtin_types = ['void', 'object', 'int', 'short', 'bool', 'char', 'double', 'string', 'float', 'byte', 'Random',
+                 'Func', 'Action', 'Dictionary', 'List', 'IEnumerable', 'IDictionary', 'DateTime', 'Exception']
 
 
 @dataclass
@@ -22,6 +23,14 @@ class CSharpType:
         if self.is_array:
             signature += "[]"
         return signature
+
+
+class CSharpTuple(CSharpType):
+    def __init__(self, elements: list):
+        self.elements = elements
+
+    def __repr__(self):
+        return "(" + ', '.join(str(x) for x in self.elements) + ")"
 
 
 def create_dummy_type(name: str):
@@ -52,6 +61,9 @@ class TypeResolver:
             self.type_references[typename] = create_dummy_type(typename)
 
     def parse_type_node(self, type_node: tree_sitter.Node) -> CSharpType:
+        if type_node.named_children and type_node.named_child(0).type == "tuple_element":
+            from sharp_parser.vars.variables import parse_field
+            return CSharpTuple([parse_field(child, self) for child in type_node.named_children])
         match type_node.type:
             case "predefined_type":
                 return self.get_type_by_name(type_node.text.decode())
