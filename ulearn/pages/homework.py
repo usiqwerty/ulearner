@@ -24,8 +24,8 @@ class HomeworkPage(UlearnPage):
         return (self.prelude + "\n\n" +
                 "Вот сигнатуры классов, объявленных в других файлах проекта, которые могут использоваться в коде:\n" +
                 f"```\n{'\n'.join(str(x) for x in self.project_dependencies)}\n```\n" +
-                code_quality_note + "\nКод, который тебе нужно дополнить:\n" +
-                self.initial_code_file)
+                code_quality_note + "\nКод, который тебе нужно дополнить:\n"  "```\n"+
+                self.initial_code_file+"```")
 
 
 def parse_homework(blocks: dict[str, list[dict]]):

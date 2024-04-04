@@ -49,7 +49,7 @@ def parse_method(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> 
 
 def parse_operator(method_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpMethod:
     modifiers = []
-    return_type: CSharpType = None #type_resolver.get_type_by_name('void')
+    return_type: CSharpType = None
     arguments = []
     method_name = None
 
