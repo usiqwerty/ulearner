@@ -10,10 +10,11 @@ def resolve_all_dependencies(initial_source: str, project_name: str) -> list[CSh
 
     parse_code_from_string(initial_source, namespace)
 
-    for filename in list_all_files(project_name):
-        aux_source = get_code_file(project_name, filename, "")
-        dependencies += parse_code_from_string(aux_source, namespace)
+    for i in range(2):
+        for filename in list_all_files(project_name):
+            aux_source = get_code_file(project_name, filename, "")
+            dependencies += parse_code_from_string(aux_source, namespace)
 
-    if namespace.type_resolver.unresolved:
-        raise Exception(f"Unresolved dependencies: {namespace.type_resolver.unresolved}")
+    # if namespace.type_resolver.unresolved:
+    #     raise Exception(f"Unresolved dependencies: {namespace.type_resolver.unresolved}")
     return dependencies

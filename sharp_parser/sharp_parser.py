@@ -40,7 +40,7 @@ def parse_code_from_string(code: str, namespace: CSharpNamespace) -> list[CSharp
             case 'class_declaration':
                 ans = parse_class(child, namespace.type_resolver)
                 namespace.defined_classes.append(ans)
-                namespace.type_resolver.mark_type_as_resolved(ans.name)
+                # namespace.type_resolver.mark_type_as_resolved(ans.name)
             case "record_declaration":
                 ans = parse_record(child, namespace.type_resolver)
                 namespace.defined_classes.append(ans)
