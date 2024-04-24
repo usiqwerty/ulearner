@@ -27,14 +27,25 @@ def get_code_file(project_name: str, filename: str, url: str):
         return f.read()
 
 
+def recursive_list(directory: str):
+    files = []
+    for filename in os.listdir(directory):
+        entry_path = os.path.join(directory, filename)
+
+        if os.path.isdir(entry_path):
+            files += recursive_list(entry_path)
+        else:
+            if filename.endswith(".cs"):
+                files.append(entry_path)
+    return files
+
+
 def list_all_files(project_name: str) -> list[str]:
     """
     Перечислить все .cs файлы проекта
     :param project_name: имя проекта
     :return: Имена файлов
     """
-    files = [filename
-             for filename in os.listdir(os.path.join(ulearner_root, project_name))
-             if filename.endswith(".cs")
-             ]
+
+    files = recursive_list(os.path.join(ulearner_root, project_name))
     return files
