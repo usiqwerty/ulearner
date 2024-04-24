@@ -30,7 +30,8 @@ def parse_code_from_string(code: str, namespace: CSharpNamespace) -> list[CSharp
             namespace_piece = child.named_children[-1]
 
     if not namespace_piece:
-        raise Exception("No namespace")
+        return []
+        # raise Exception("No namespace")
     if not namespace_piece.children:
         raise Exception("Empty namespace")
 
