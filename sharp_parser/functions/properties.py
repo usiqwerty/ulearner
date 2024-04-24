@@ -31,6 +31,12 @@ def parse_property(property_node: tree_sitter.Node, type_resolver: sharp_parser.
                     prop_type = type_resolver.get_type_by_name(child.text.decode())
                 else:
                     prop_name = child.text.decode()
+            case "generic_name":
+                prop_type = type_resolver.parse_type_node(child)
+            case "qualified_name":
+                prop_type = type_resolver.parse_type_node(child)
+            case "nullable_type":
+                prop_type = type_resolver.parse_type_node(child)
             case "arrow_expression_clause":
                 set = ""
                 get = "get"

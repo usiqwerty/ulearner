@@ -79,6 +79,8 @@ class TypeResolver:
                 ty = self.get_type_by_name(type_node.named_child(0).text.decode())
                 ty.nullable = True
                 return ty
+            case "qualified_name":
+                return self.get_type_by_name(type_node.text.decode())
         raise Exception(f'Unknown var type: {type_node.type}')
 
     def parse_generic_type_node(self, type_node: tree_sitter.Node) -> CSharpType:
