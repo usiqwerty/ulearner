@@ -3,7 +3,13 @@ from dataclasses import dataclass
 import tree_sitter
 
 builtin_types = ['void', 'object', 'int', 'short', 'bool', 'char', 'double', 'string', 'float', 'byte', 'Random',
-                 'Func', 'Action', 'Dictionary', 'List', 'IEnumerable', 'IDictionary', 'DateTime', 'Exception']
+                 'Func', 'Action', 'Dictionary', 'List', 'IEnumerable', 'IDictionary', 'DateTime', 'Exception', 'T',
+                 'IEnumerator', 'IReadOnlyList', 'HashSet', 'Queue',
+                 'Point', 'DirectoryInfo', 'Path',
+                 'Application', 'Canvas', 'Task', 'Avalonia.Point', 'PointerEventArgs', 'PointerWheelEventArgs',
+                 'DrawingContext', 'Size', 'Bitmap', 'Window',
+                 'DispatcherTimer', 'KeyEventArgs', 'Matrix', 'Vector','PointerPressedEventArgs', 'PointerReleasedEventArgs',
+                 "ITransform"]
 
 
 @dataclass
