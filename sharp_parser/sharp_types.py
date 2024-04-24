@@ -11,10 +11,11 @@ class CSharpType:
     name: str
     generic_types: list
     is_array: bool = False
+    nullable = False
 
     @property
     def just_typename(self):
-        return str(self)
+        return str(self) + "?" if self.nullable else ''
 
     def __repr__(self):
         signature = f"{self.name}"
@@ -74,7 +75,11 @@ class TypeResolver:
                 return CSharpType(value_type.name, value_type.generic_types, True)
             case "identifier":
                 return self.get_type_by_name(type_node.text.decode())
-        raise Exception('Unknown var type')
+            case "nullable_type":
+                ty = self.get_type_by_name(type_node.named_child(0).text.decode())
+                ty.nullable = True
+                return ty
+        raise Exception(f'Unknown var type: {type_node.type}')
 
     def parse_generic_type_node(self, type_node: tree_sitter.Node) -> CSharpType:
         type_class = ""
