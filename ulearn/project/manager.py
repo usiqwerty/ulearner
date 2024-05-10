@@ -28,7 +28,7 @@ def download_and_unzip(url: str, force_update = False):
             print("Rmdir")
             shutil.rmtree(out_dir)
         else:
-            print("Directory exists and not empty")
+            print(f"Directory exists and not empty: {out_dir}")
             return
     print("Unpacking...")
     shutil.unpack_archive(target_full_path, out_dir)

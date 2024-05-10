@@ -33,14 +33,14 @@ def fetch_course_full(course_id: str) -> UlearnCourse:
     return course
 
 
-courses = load_courses()
-print('units done')
-
-
 def get_course(course_id: str) -> UlearnCourse:
     if course_id not in courses:
         fetch_course_full(course_id)
     return courses[course_id]
+
+
+courses = load_courses()
+print('units done')
 
 #
 # def fetch_online_user_progress(course_id: str):

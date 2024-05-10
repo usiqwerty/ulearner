@@ -23,8 +23,11 @@ def get_code_file(project_name: str, filename: str, url: str):
     """
     download_and_unzip(url)
     full_path_fn = os.path.join(ulearner_root, project_name, filename)
-    with open(full_path_fn, encoding='utf-8') as f:
-        return f.read()
+    try:
+        with open(full_path_fn, encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        return None
 
 
 def recursive_list(directory: str):

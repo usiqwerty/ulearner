@@ -55,7 +55,7 @@ class TypeResolver:
 
     def get_type_by_name(self, typename: str):
         if typename not in self.type_references:
-            print(f"Unresolved type: {typename}")
+            # print(f"Unresolved type: {typename}")
             self.unresolved.append(typename)
             self.type_references[typename] = create_dummy_type(typename)
 

@@ -21,9 +21,13 @@ class HomeworkPage(UlearnPage):
     project_dependencies: list[CSharpClass]
 
     def generate_prompt(self) -> str:
+        if not self.initial_code_file:
+            return self.prelude + "Вставьте содержимое вашего файла:"
+        depline = f"```\n{'\n'.join(str(x) for x in self.project_dependencies)}\n```\n" if self.project_dependencies else ""
+
         return (self.prelude + "\n\n" +
                 "Вот сигнатуры классов, объявленных в других файлах проекта, которые могут использоваться в коде:\n" +
-                f"```\n{'\n'.join(str(x) for x in self.project_dependencies)}\n```\n" +
+                depline +
                 code_quality_note + "\nКод, который тебе нужно дополнить:\n"  "```\n"+
                 self.initial_code_file+"```")
 
@@ -44,12 +48,13 @@ def parse_homework(blocks: dict[str, list[dict]]):
         a_tag.decompose()
     if not project:
         raise Exception("No project")
-    #TODO: какие-то магические числа, почему именно len(x)>1 ???
-    # вообще, надо как-то нормально преобразовывать в текст
-    prelude = '\n'.join(x.replace('\n', ' ') for x in content.stripped_strings) # if len(x) > 1
+
+    prelude = content.text
     main_source = get_code_file(project, code_file_name, project_link)
-    #
-    deps = resolve_all_dependencies(main_source, project)
+    if main_source:
+        deps = resolve_all_dependencies(main_source, project)
+    else:
+        deps = []
 
     page = HomeworkPage(prelude=prelude, initial_code_file=main_source, project_dependencies=deps)
     return page

@@ -28,13 +28,12 @@ class LecturePage(UlearnPage):
                 timecodes_textual + "\n" +
                 f"```\n{self.code_block or ""}\n```\n" +
                 "Можешь объяснить эту тему? "
-                "Развёрнуто объясни суть и проиллюстрируй примерами кода. "
+                "Раскрой содержание и проиллюстрируй примерами кода. "
                 "Наверняка приведённая информация устарела или неточна, если это так, можешь исправить эти неточности. "
                 "Возможно, комментарии пользователей помогут выявить важные моменты:\n" +
                 comments_textual)
 
 
-# TODO: суть плохое слово здесь
 def parse_lesson(blocks: dict[str, list[dict]], page_id, title, config: UlearnConfig):
     video_blocks = blocks.get('video') or blocks.get('youtube')
     timecodes = {}

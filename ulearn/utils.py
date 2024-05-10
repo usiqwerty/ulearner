@@ -1,3 +1,6 @@
+from typing import Iterable
+
+
 def letter_index(index: int):
     return "abcdefghijklmnopqrstuvwxyz"[index]
 

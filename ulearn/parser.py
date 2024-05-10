@@ -36,4 +36,5 @@ def parse_page(page_id: str, config: UlearnConfig, force_page_type: str | None =
 def parse_link(url: str):
     """Извлечь ID курса и ID страницы из ссылки на эту страницу"""
     r = re.search(r"https://ulearn.me/course/([\w\d]+)/[\w_]+_([\d\w\-]+)", url)
-    return r.groups()
+    course_id, pid = r.groups()
+    return course_id.lower(), pid

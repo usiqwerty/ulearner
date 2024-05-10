@@ -6,9 +6,6 @@ from ulearn.pages.page import UlearnPage
 from ulearn.utils import letter_index
 
 
-# TODO: Возможно, промпт нужно собирать только внутри метода,
-# а не хранить готовый
-
 @dataclass
 class TheoryTaskPage(UlearnPage):
 	content: str
