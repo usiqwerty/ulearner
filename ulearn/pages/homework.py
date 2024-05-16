@@ -22,7 +22,7 @@ class HomeworkPage(UlearnPage):
 
     def generate_prompt(self) -> str:
         if not self.initial_code_file:
-            return self.prelude + "Вставьте содержимое вашего файла:"
+            return self.prelude + "\nВставьте содержимое вашего файла:"
         depline = f"```\n{'\n'.join(str(x) for x in self.project_dependencies)}\n```\n" if self.project_dependencies else ""
 
         return (self.prelude + "\n\n" +
