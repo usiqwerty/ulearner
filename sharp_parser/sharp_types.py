@@ -9,7 +9,8 @@ builtin_types = ['void', 'object', 'int', 'short', 'bool', 'char', 'double', 'st
                  'Application', 'Canvas', 'Task', 'Avalonia.Point', 'PointerEventArgs', 'PointerWheelEventArgs',
                  'DrawingContext', 'Size', 'Bitmap', 'Window',
                  'DispatcherTimer', 'KeyEventArgs', 'Matrix', 'Vector','PointerPressedEventArgs', 'PointerReleasedEventArgs',
-                 "ITransform", 'TimeSpan', 'Button', 'Key', 'Image', 'Data']
+                 "ITransform", 'TimeSpan', 'Button', 'Key', 'Image', 'Data', 'Stack',
+                 'Tuple', 'StringWriter', 'IList', 'Regex', 'DocumentTokens', 'Attribute', 'ConsoleColor']
 
 
 @dataclass

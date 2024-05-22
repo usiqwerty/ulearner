@@ -35,9 +35,14 @@ def parse_multiple_parameters(parameters_children: list[tree_sitter.Node], type_
                 if param.child(0).text.decode() == "this":
                     modifiers.append("this")
                     continue
-                ptype = type_resolver.parse_type_node(param.child(0))
-                pname = param.child(1).text.decode()
-                params.append((modifiers, ptype, pname))
+                if param.child(0).type=="attribute_list":
+                    ptype = type_resolver.parse_type_node(param.child(1))
+                    pname = param.child(2).text.decode()
+                    params.append((modifiers, ptype, pname))
+                else:
+                    ptype = type_resolver.parse_type_node(param.child(0))
+                    pname = param.child(1).text.decode()
+                    params.append((modifiers, ptype, pname))
 
                 ptype = None
                 pname = None
