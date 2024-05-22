@@ -60,4 +60,4 @@ def video_summary(youtube_video_id: str):
 
 
 if __name__ == "__main__":
-    video_summary("LXA_FovAS-A")
+    video_summary("snaRhjX4IdM")
