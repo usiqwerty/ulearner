@@ -30,13 +30,17 @@ def get_code_file(project_name: str, filename: str, url: str):
         return None
 
 
+excluded_dirs = ['SuspiciousSources']
+
+
 def recursive_list(directory: str):
     files = []
     for filename in os.listdir(directory):
         entry_path = os.path.join(directory, filename)
 
         if os.path.isdir(entry_path):
-            files += recursive_list(entry_path)
+            if filename not in excluded_dirs:
+                files += recursive_list(entry_path)
         else:
             if filename.endswith(".cs"):
                 files.append(entry_path)
