@@ -3,12 +3,15 @@ from appconfig import ys_cookie, yandex_session_cookie
 import requests
 
 ya300_apikey = ""
-#
-# endpoint = 'https://300.ya.ru/api/sharing-url'
-# r = requests.post(endpoint, json = {'article_url': 'https://habr.com/ru/news/729422/'},
-#     headers = {'Authorization': f'OAuth {ya300_apikey}'})
-#
+
 gen_url = "https://300.ya.ru/api/generation"
+if not ys_cookie:
+    print("В config.json по ключу ys должно лежать значение этой куки с сайта 300.ya.ru")
+if not yandex_session_cookie:
+    print("В config.json по ключу Session_id должно лежать значение этой куки с сайта 300.ya.ru")
+
+if not ys_cookie or not yandex_session_cookie:
+    exit(1)
 
 cook = {
     "ys": ys_cookie,

@@ -8,8 +8,8 @@ try:
     with open(auth_fn, encoding='utf-8') as f:
         auth_cookie = f.read()
 except FileNotFoundError:
-    print('Auth cookie is not saved, exiting')
-    exit()
+    print(f'Сохраните значение куки авторизации в файле {auth_fn}')
+    exit(1)
 
 ulearn_cookies = {'ulearn.auth': auth_cookie}
 ulearn_auth_token = None
