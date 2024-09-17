@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 import tree_sitter
 
-from sharp_parser.sharp_types import CSharpType, TypeResolver
+from sharp_parser.sharp_types import CSharpType
+from sharp_parser.type_resolver import TypeResolver
 
 
 @dataclass

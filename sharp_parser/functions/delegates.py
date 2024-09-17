@@ -1,27 +1,30 @@
 import tree_sitter
 
-import sharp_parser.sharp_types
+import sharp_parser.type_resolver
 from sharp_parser.functions.parameters import parse_parameters
+from sharp_parser.sharp_types import CSharpType
 from sharp_parser.vars.variables import CSharpVar
 
 
 class CSharpDelegate:
-    def __init__(self, modifiers, return_type: sharp_parser.sharp_types.CSharpType, delegate_name: str, arguments: list[CSharpVar]):
+    def __init__(self, modifiers, return_type: CSharpType, delegate_name: str, arguments: list[CSharpVar]):
         self.modifiers = modifiers
         self.return_type = return_type
         self.name = delegate_name
         self.arguments = arguments
+
     def __repr__(self):
         output = ""
         for modifier in self.modifiers:
-            output += modifier+" "
+            output += modifier + " "
         output += f"delegate {self.return_type} {self.name}("
         output += ', '.join(arg.as_param for arg in self.arguments)
-        output +=');'
+        output += ');'
 
         return output
 
-def parse_delegate(delegate_node: tree_sitter.Node, type_resolver: sharp_parser.sharp_types.TypeResolver):
+
+def parse_delegate(delegate_node: tree_sitter.Node, type_resolver: sharp_parser.type_resolver.TypeResolver):
     modifiers = []
     return_type = None
     delegate_name = None

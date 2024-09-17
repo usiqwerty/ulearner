@@ -1,6 +1,6 @@
 from sharp_parser.oop.classes import CSharpClass
 from sharp_parser.oop.interfaces import CSharpInterface
-from sharp_parser.sharp_types import TypeResolver
+from sharp_parser.type_resolver import TypeResolver
 
 
 class CSharpNamespace:

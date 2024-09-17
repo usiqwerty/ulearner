@@ -1,6 +1,6 @@
 import tree_sitter
 
-import sharp_parser.sharp_types
+from sharp_parser.type_resolver import TypeResolver
 
 
 class CSharpEnum:
@@ -12,14 +12,15 @@ class CSharpEnum:
     def __repr__(self):
         output = ""
         for modifier in self.modifiers:
-            output+=f"{modifier} "
-        output+=f"enum {self.name}\n" + "{\n"
+            output += f"{modifier} "
+        output += f"enum {self.name}\n" + "{\n"
         for member_name, member_value in self.members:
-            output+=f"    {member_name} = {member_value},\n"
-        output+="}"
+            output += f"    {member_name} = {member_value},\n"
+        output += "}"
         return output
 
-def parse_enum(enum_node: tree_sitter.Node, type_resolver: sharp_parser.sharp_types.TypeResolver) -> CSharpEnum:
+
+def parse_enum(enum_node: tree_sitter.Node, type_resolver: TypeResolver) -> CSharpEnum:
     modifiers = []
 
     enum_name = None

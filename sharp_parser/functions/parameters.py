@@ -1,55 +1,55 @@
 import tree_sitter
 
-from sharp_parser.sharp_types import TypeResolver
+from sharp_parser.type_resolver import TypeResolver
 from sharp_parser.vars.variables import CSharpVar
 
 
 def parse_multiple_parameters(parameters_children: list[tree_sitter.Node], type_resolver):
     params = []
     modifiers = []
-    ptype = None
-    pname = None
+    parameter_type = None
+    parameter_name = None
 
     for param in parameters_children:
         match param.type:
             case '(':
                 continue
             case ',' | '(' | ')':
-                if ptype:
-                    params.append((modifiers, ptype, pname))
-                ptype = None
-                pname = None
+                if parameter_type:
+                    params.append((modifiers, parameter_type, parameter_name))
+                parameter_type = None
+                parameter_name = None
                 modifiers = []
             case "params":
                 modifiers.append("params")
             case "identifier":
-                if not ptype:
-                    ptype = type_resolver.get_type_by_name(param.text.decode())
+                if not parameter_type:
+                    parameter_type = type_resolver.get_type_by_name(param.text.decode())
                 else:
-                    pname = param.text.decode()
+                    parameter_name = param.text.decode()
             case "array_type":
-                ptype = type_resolver.parse_type_node(param)
+                parameter_type = type_resolver.parse_type_node(param)
             case "parameter":
                 if not param.children:
                     continue
                 if param.child(0).text.decode() == "this":
                     modifiers.append("this")
                     continue
-                if param.child(0).type=="attribute_list":
-                    ptype = type_resolver.parse_type_node(param.child(1))
-                    pname = param.child(2).text.decode()
-                    params.append((modifiers, ptype, pname))
+                if param.child(0).type == "attribute_list":
+                    parameter_type = type_resolver.parse_type_node(param.child(1))
+                    parameter_name = param.child(2).text.decode()
+                    params.append((modifiers, parameter_type, parameter_name))
                 else:
-                    ptype = type_resolver.parse_type_node(param.child(0))
-                    pname = param.child(1).text.decode()
-                    params.append((modifiers, ptype, pname))
+                    parameter_type = type_resolver.parse_type_node(param.child(0))
+                    parameter_name = param.child(1).text.decode()
+                    params.append((modifiers, parameter_type, parameter_name))
 
-                ptype = None
-                pname = None
+                parameter_type = None
+                parameter_name = None
                 modifiers = []
                 continue
             case _:
-                ptype = type_resolver.get_type_by_name(param.text.decode())
+                parameter_type = type_resolver.get_type_by_name(param.text.decode())
 
     return params
 

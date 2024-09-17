@@ -1,6 +1,6 @@
 from sharp_parser.oop.classes import CSharpClass, parse_class
 from sharp_parser.functions.parameters import parse_parameters
-from sharp_parser.sharp_types import TypeResolver
+from sharp_parser.type_resolver import TypeResolver
 from sharp_parser.vars.variables import CSharpVar
 
 
@@ -34,7 +34,6 @@ class CSharpRecord(CSharpClass):
 
 
 def parse_record(class_in_file, type_resolver: TypeResolver) -> CSharpRecord:
-    # raise Exception("рекорды нужно парстить")
     params = []
 
     as_class = parse_class(class_in_file, type_resolver)

@@ -3,7 +3,8 @@ from dataclasses import dataclass
 import tree_sitter
 
 from sharp_parser.functions.parameters import parse_parameters
-from sharp_parser.sharp_types import CSharpType, TypeResolver
+from sharp_parser.sharp_types import CSharpType
+from sharp_parser.type_resolver import TypeResolver
 from sharp_parser.vars.variables import CSharpVar
 
 
@@ -20,7 +21,7 @@ class CSharpMethod:
             signature += ' '.join(self.modifiers) + " "
         if self.return_type:
             signature += str(self.return_type) + " "
-        signature += self.name  # + " "
+        signature += self.name
         signature += "(" + ', '.join(x.as_param for x in self.arguments) + ")"
         return signature + ";"
 

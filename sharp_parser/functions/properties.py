@@ -1,6 +1,8 @@
-import tree_sitter
+from tree_sitter import Node
 
 import sharp_parser.sharp_types
+from sharp_parser.type_resolver import TypeResolver
+
 
 class CSharpPropery:
     def __init__(self, modifiers, prop_type, name, get: str, set: str):
@@ -9,10 +11,12 @@ class CSharpPropery:
         self.name = name
         self.get = get
         self.set = set
+
     def __repr__(self):
         return f"{' '.join(self.modifiers)} {self.prop_type} {self.name} {{ {self.get}; {self.set} }}"
 
-def parse_property(property_node: tree_sitter.Node, type_resolver: sharp_parser.sharp_types.TypeResolver):
+
+def parse_property(property_node: Node, type_resolver: TypeResolver):
     modifiers = []
     prop_type = None
     prop_name = None

@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 
+from tree_sitter import Node
 
 from sharp_parser.functions.methods import parse_method, CSharpMethod, parse_operator
 from sharp_parser.functions.properties import parse_property
 from sharp_parser.sharp_types import CSharpType
+from sharp_parser.type_resolver import TypeResolver
 from sharp_parser.vars.variables import parse_field, CSharpVar
 
 
@@ -26,40 +28,49 @@ class CSharpInterface:
             signature += f"<{', '.join(str(x) for x in self.generic_types)}>"
         signature += " {\n"
         for thing in self.body:
-            # thing: CSharpVar | CSharpMethod
             signature += " " * 4 + str(thing) + '\n'
         signature += "}"
         return signature
 
 
-def parse_interface(interface_in_file, type_resolver):
+def parse_interface(interface_in_file: Node, type_resolver):
     """
     :param interface_in_file: Нода интерфейса
     :param type_resolver: Резолвер типов
     :return:
     """
-    interface_modifiers = []
-    interface_name = None
-    interface_body = None
-    interface_fields = []
-    interface_methods = []
-    interface_generics = []
 
+    interface = CSharpInterface([], "None", [], [])
+
+    interface_body_node = parse_signature(interface, interface_in_file, type_resolver)
+    parse_body(interface, interface_body_node, type_resolver)
+
+    return interface
+
+
+def parse_signature(interface: CSharpInterface, interface_in_file, type_resolver) -> Node | None:
+    interface_body: Node | None = None
     for child in interface_in_file.children:
         match child.type:
             case "modifier":
-                interface_modifiers.append(child.child(0).type)
+                interface.modifiers.append(child.child(0).type)
             case "identifier":
-                interface_name = child.text.decode()
+                interface.name = child.text.decode()
             case "declaration_list":
                 interface_body = child
             case 'type_parameter_list':
                 for value_type in child.named_children:
                     generic_vtype = type_resolver.get_type_by_name(value_type.child(0).text.decode())
-                    interface_generics.append(generic_vtype)
+                    interface.generic_types.append(generic_vtype)
             case "base_list":
                 for base in child.named_children:
                     type_resolver.parse_type_node(base)
+    return interface_body
+
+
+def parse_body(interface: CSharpInterface, interface_body: Node, type_resolver: TypeResolver):
+    interface_fields = []
+    interface_methods = []
     for child in interface_body.named_children:
         match child.type:
             case "field_declaration":
@@ -71,5 +82,4 @@ def parse_interface(interface_in_file, type_resolver):
                 interface_fields.append(x)
             case "operator_declaration":
                 interface_methods.append(parse_operator(child, type_resolver))
-    ans = CSharpInterface(interface_modifiers, interface_name, interface_fields + interface_methods, interface_generics)
-    return ans
+    interface.body = interface_fields + interface_methods
