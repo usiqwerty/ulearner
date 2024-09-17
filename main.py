@@ -10,7 +10,7 @@ from ulearn.parser import parse_page, parse_link
 from gpt.api import request
 faulthandler.enable()
 
-url = "https://ulearn.me/course/basicprogramming2/Praktika_Dokumentatsiya__d6e4df45-0a2f-47c9-ad6d-19cc69e9c549"
+url = "https://ulearn.me/course/cs2/Poryadok_initsializatsii_a530d860-f05b-485d-b20b-7733573faea8"
 
 course_id, pid = parse_link(url)
 course = get_course(course_id)
