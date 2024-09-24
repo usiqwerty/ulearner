@@ -40,7 +40,7 @@ def get_course(course_id: str) -> UlearnCourse:
 
 
 courses = load_courses()
-print('units done')
+print(f"Сохранено курсов: {len(courses)}")
 
 #
 # def fetch_online_user_progress(course_id: str):
