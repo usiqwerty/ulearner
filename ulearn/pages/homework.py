@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from bs4 import BeautifulSoup as bs
-from file_manager.explorer import get_code_file
+from file_manager.explorer import get_code_file, list_all_files
 from file_manager.explorer import get_requested_file_name
 from sharp_parser.oop.classes import CSharpClass
 from ulearn.pages.page import UlearnPage
@@ -13,16 +13,22 @@ code_quality_note = '\n'.join([
     "Тесты писать не нужно, т.к. они уже есть в проверяющей системе.",
 ])
 
-
 @dataclass
 class HomeworkPage(UlearnPage):
     prelude: str
     initial_code_file: str
     project_dependencies: list[CSharpClass]
+    tests_file: str| None
 
     def generate_prompt(self) -> str:
         if not self.initial_code_file:
             return self.prelude + "\nВставьте содержимое вашего файла:"
+        elif self.initial_code_file.count('\n') < 5:
+            if self.tests_file:
+                return self.prelude +"\nВот тесты, которые должен пройти код:\n" + self.tests_file
+            else:
+                raise Exception("Could not find tests file")
+
         depline = f"```\n{'\n'.join(str(x) for x in self.project_dependencies)}\n```\n" if self.project_dependencies else ""
 
         return (self.prelude + "\n\n" +
@@ -56,5 +62,11 @@ def parse_homework(blocks: dict[str, list[dict]]):
     else:
         deps = []
 
-    page = HomeworkPage(prelude=prelude, initial_code_file=main_source, project_dependencies=deps)
+    test_file = None
+    for file in list_all_files(project):
+        if "tests" in file.lower() or "should" in file.lower():
+            with open(file, encoding='utf-8') as f:
+                test_file = f.read()
+
+    page = HomeworkPage(prelude=prelude, initial_code_file=main_source, project_dependencies=deps, tests_file=test_file)
     return page
