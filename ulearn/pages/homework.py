@@ -1,41 +1,49 @@
 from dataclasses import dataclass
 
 from bs4 import BeautifulSoup as bs
+
 from file_manager.explorer import get_code_file, list_all_files
 from file_manager.explorer import get_requested_file_name
 from sharp_parser.oop.classes import CSharpClass
 from ulearn.pages.page import UlearnPage
-from ulearn.project.manager import extract_project_name
 from ulearn.project.dependencies import resolve_all_dependencies
+from ulearn.project.manager import extract_project_name
 
 code_quality_note = '\n'.join([
     "Не забывай о правилах написания чистого кода, а так же используй var при объявлении типов переменных.",
     "Тесты писать не нужно, т.к. они уже есть в проверяющей системе.",
 ])
 
+
+def wrap_code_for_md(code: str) -> str:
+    return f"```\n{code}\n```\n"
+
+
 @dataclass
 class HomeworkPage(UlearnPage):
     prelude: str
     initial_code_file: str
     project_dependencies: list[CSharpClass]
-    tests_file: str| None
+    tests_file: str | None
 
     def generate_prompt(self) -> str:
         if not self.initial_code_file:
             return self.prelude + "\nВставьте содержимое вашего файла:"
         elif self.initial_code_file.count('\n') < 5:
             if self.tests_file:
-                return self.prelude +"\nВот тесты, которые должен пройти код:\n" + self.tests_file
+                return self.prelude + "\nВот тесты, которые должен пройти код:\n" + wrap_code_for_md(self.tests_file)
             else:
                 raise Exception("Could not find tests file")
 
-        depline = f"```\n{'\n'.join(str(x) for x in self.project_dependencies)}\n```\n" if self.project_dependencies else ""
+        depline = wrap_code_for_md(
+            '\n'.join(str(x) for x in self.project_dependencies)
+        ) if self.project_dependencies else ""
 
         return (self.prelude + "\n\n" +
                 "Вот сигнатуры классов, объявленных в других файлах проекта, которые могут использоваться в коде:\n" +
                 depline +
-                code_quality_note + "\nКод, который тебе нужно дополнить:\n"  "```\n"+
-                self.initial_code_file+"```")
+                code_quality_note + "\nКод, который тебе нужно дополнить:\n" +
+                wrap_code_for_md(self.initial_code_file))
 
 
 def parse_homework(blocks: dict[str, list[dict]]):
