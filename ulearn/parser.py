@@ -21,6 +21,8 @@ def parse_page(page_id: str, config: UlearnConfig, force_page_type: str | None =
         url = f"https://api.ulearn.me/slides/{config.course.code}/{page_id}"
         r = cached_requests.get(url)
         data = r.json()
+        if data['status'] == 'error':
+            raise Exception(data['message'])
         blocks = extract_blocks(data['blocks'])
 
         if page_type == "lesson":
