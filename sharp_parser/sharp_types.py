@@ -10,7 +10,8 @@ builtin_types = [
     'DispatcherTimer', 'KeyEventArgs', 'Matrix', 'Vector', 'PointerPressedEventArgs',
     'PointerReleasedEventArgs', "ITransform", 'TimeSpan', 'Button', 'Key',
     'Image', 'Data', 'Stack', 'Tuple', 'StringWriter', 'IList', 'Regex',
-    'DocumentTokens', 'Attribute', 'ConsoleColor', 'Guid', 'Expression'
+    'DocumentTokens', 'Attribute', 'ConsoleColor', 'Guid', 'Expression',
+    'TextWriter', 'IReadOnlyDictionary'
 ]
 
 
