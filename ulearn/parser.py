@@ -21,7 +21,7 @@ def parse_page(page_id: str, config: UlearnConfig, force_page_type: str | None =
         url = f"https://api.ulearn.me/slides/{config.course.code}/{page_id}"
         r = cached_requests.get(url)
         data = r.json()
-        if data['status'] == 'error':
+        if data.get('status') == 'error':
             raise Exception(data['message'])
         blocks = extract_blocks(data['blocks'])
 
@@ -37,6 +37,6 @@ def parse_page(page_id: str, config: UlearnConfig, force_page_type: str | None =
 
 def parse_link(url: str):
     """Извлечь ID курса и ID страницы из ссылки на эту страницу"""
-    r = re.search(r"https://ulearn.me/[Cc]ourse/([\w\d]+)/[\w_]+_([\d\w\-]+)", url)
+    r = re.search(r"https://ulearn.me/[Cc]ourse/([\w\d-]+)/[\w_]+_([\d\w\-]+)", url)
     course_id, pid = r.groups()
     return course_id.lower(), pid
