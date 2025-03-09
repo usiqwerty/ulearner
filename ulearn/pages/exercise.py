@@ -17,7 +17,10 @@ class ExercisePage(UlearnPage):
 
 def parse_exercise(blocks: dict[str, list[dict]]):
 	task = bs(''.join(x["content"] for x in blocks['html']), 'html.parser').text
-	task_sample_code = blocks['code'][0]["code"]
+	if 'code' in blocks:
+		task_sample_code = blocks['code'][0]["code"]
+	else:
+		task_sample_code = ''
 	code_block = blocks['exercise'][0]['exerciseInitialCode']
 
 	page = ExercisePage(introduction=task, main_code=task_sample_code, initial_code=code_block)
